@@ -264,6 +264,98 @@
         display: block;
     }
 
+    /* FOOTER */
+    footer {
+        border-top: 1px solid var(--border);
+        padding: 1.5rem 2.5rem;
+        margin-top: 4rem;
+    }
+
+    .footer-inner {
+        max-width: 860px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .footer-left {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+    }
+
+    .footer-logo {
+        font-family: var(--display);
+        font-size: 0.9rem;
+        font-weight: 800;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--accent);
+    }
+
+    .footer-tagline {
+        font-size: 0.72rem;
+        color: var(--muted);
+        border-left: 1px solid var(--border);
+        padding-left: 1.25rem;
+    }
+
+    .footer-right {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+    }
+
+    .footer-credit {
+        font-size: 0.68rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .footer-year {
+        font-size: 0.68rem;
+        color: var(--muted);
+        border-left: 1px solid var(--border);
+        padding-left: 1.25rem;
+    }
+    
+    .footer-right span a{
+        color: var(--accent);
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.2s;
+    }
+
+    .footer-right span a:hover {
+        border-color: #fff;
+    }
+
+    @media (max-width: 600px) {
+        footer { 
+            padding: 1.25rem; 
+        }
+
+        .footer-inner { 
+            flex-direction: column; 
+            align-items: flex-start; 
+        }
+
+        .footer-right { 
+            flex-direction: column; 
+            align-items: flex-start; 
+            gap: 0.5rem; 
+        }
+
+        .footer-year { 
+            border-left: none; 
+            padding-left: 0; 
+        }
+    }
+
     /* RESPONSIVENESS  */
     @media (max-width: 768px) {
       body { 
@@ -288,7 +380,7 @@
             <h1>Manage tasks.<span>Stay free.</span></h1>
             <p>A no-nonsense task manager built for people who want to get things done without the bloat.</p>
         </div>
-        
+
         <div class="stats">
             <div class="stat-item">
                 <div class="stat-number">∞</div>
@@ -355,6 +447,20 @@
             <div class="message" id="register-message"></div>
         </div>
     </div>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-left">
+                <span class="footer-logo">TaskFree</span>
+                <span class="footer-tagline">Stay focused. Stay free.</span>
+            </div>
+            
+            <div class="footer-right">
+                <span class="footer-credit">Built with Node.js + Express + SQLite</span>
+                <span class="footer-year">© 2026 TaskFree. Built by <a href="#">Simeon A. Tarr</a></span>
+            </div>
+        </div>
+    </footer>
 
     <script src="/js/auth.js"></script>
 </body>
