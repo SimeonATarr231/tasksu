@@ -6,6 +6,7 @@
     <title>TaskFree — Login</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     /* RESET & VARIABLES */
     *, 
@@ -25,6 +26,15 @@
         --muted:   #666;
         --mono:    'Space Mono', monospace;
         --display: 'Syne', sans-serif;
+    }
+
+    /* Light theme overrides */
+    [data-theme="light"] {
+        --black:  #f5f0e8;
+        --white:  #0a0a0a;
+        --mid:    #e8e3db;
+        --border: #d0cbc3;
+        --muted:  #888;
     }
 
     /* BASE */
@@ -213,6 +223,41 @@
         color: #444;
     }
 
+    /* PASSWORD TOGGLE VISIBILITY */
+    .input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-wrapper input {
+        width: 100%;
+        padding-right: 3rem;
+    }
+
+    .eye-btn {
+        position: absolute;
+        right: 0.75rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--muted);
+        padding: 0.25rem;
+        display: flex;
+        align-items: center;
+        transition: color 0.2s;
+    }
+
+    .eye-btn:hover { 
+        color: var(--white); 
+    }
+
+    .eye-icon,
+    .eye-off-icon {
+        font-size: 0.9rem;
+    }
+
+
     .submit-btn {
         width: 100%;
         background: var(--accent);
@@ -322,7 +367,7 @@
         border-left: 1px solid var(--border);
         padding-left: 1.25rem;
     }
-    
+
     .footer-right span a{
         color: var(--accent);
         text-decoration: none;
@@ -370,6 +415,42 @@
             padding: 40px 24px; 
         }
     }
+
+    /* THEME SWITCHER */
+    .theme-switcher {
+        display: flex;
+        gap: 0;
+        margin-bottom: 2rem;
+        border: 1px solid var(--border);
+        width: fit-content;
+    }
+
+    .theme-btn {
+        background: none;
+        border: none;
+        border-right: 1px solid var(--border);
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        padding: 0.4rem 0.85rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .theme-btn:last-child { 
+        border-right: none; 
+    }
+
+    .theme-btn:hover { 
+        color: var(--white); 
+    }
+
+    .theme-btn.active {
+        background: var(--accent);
+        color: var(--black);
+    }
   </style>
 </head>
 <body>
@@ -401,6 +482,12 @@
 
     <!-- RIGHT PANEL — auth forms -->
     <div class="right-panel">
+        <div class="theme-switcher">
+            <button class="theme-btn active" data-theme="dark">Dark</button>
+            <button class="theme-btn" data-theme="light">Light</button>
+            <button class="theme-btn" data-theme="system">System</button>
+        </div>
+
         <div class="tabs">
             <button class="tab-btn active" data-tab="login">Login</button>
             <button class="tab-btn" data-tab="register">Register</button>
@@ -418,7 +505,13 @@
 
             <div class="field">
                 <label>Password</label>
-                <input type="password" id="login-password" placeholder="••••••••">
+                <div class="input-wrapper">
+                    <input type="password" id="login-password" placeholder="••••••••">
+                    <button class="eye-btn" type="button" data-target="login-password" aria-label="Toggle password visibility">
+                        <i class="fa-regular fa-eye eye-icon"></i>
+                        <i class="fa-regular fa-eye-slash eye-off-icon" style="display:none"></i>
+                    </button>
+                </div>
             </div>
             <button class="submit-btn" id="login-btn">Login</button>
             <div class="message" id="login-message"></div>
@@ -441,7 +534,13 @@
 
             <div class="field">
                 <label>Password</label>
-                <input type="password" id="reg-password" placeholder="min. 6 characters">
+                <div class="input-wrapper">
+                    <input type="password" id="reg-password" placeholder="min. 6 characters">
+                    <button class="eye-btn" type="button" data-target="reg-password" aria-label="Toggle password visibility">
+                        <i class="fa-regular fa-eye eye-icon"></i>
+                        <i class="fa-regular fa-eye-slash eye-off-icon" style="display:none"></i>
+                    </button>
+                </div>
             </div>
             <button class="submit-btn" id="register-btn">Create Account</button>
             <div class="message" id="register-message"></div>
@@ -462,6 +561,6 @@
         </div>
     </footer>
 
-    <script src="/js/auth.js"></script>
+    <script src="js/auth.js"></script>
 </body>
 </html>

@@ -1,3 +1,44 @@
+/* THEME SWITCHING SYSTEM */
+const applyTheme = (theme) => {
+  if (theme === 'system') {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+  } else {
+    document.documentElement.setAttribute('data-theme', theme);
+  }
+};
+
+const initTheme = () => {
+  const saved = localStorage.getItem('taskfree-theme') || 'dark';
+  document.querySelectorAll('.theme-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.theme === saved);
+  });
+
+  applyTheme(saved);
+};
+
+document.querySelectorAll('.theme-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const theme = btn.dataset.theme;
+
+    localStorage.setItem('taskfree-theme', theme);
+
+    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    applyTheme(theme);
+  });
+});
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+  if (localStorage.getItem('taskfree-theme') === 'system') {
+    applyTheme('system');
+  }
+});
+
+initTheme();
+
+
 /* Tab switching */
 const tabBtns = document.querySelectorAll('.tab-btn');
 const formPanels = document.querySelectorAll('.form-panel');
@@ -97,6 +138,27 @@ document.getElementById('register-btn').addEventListener('click', async () => {
         btn.disabled = false;
         btn.textContent = 'Create Account';
     }
+});
+
+/* PASSWORD TOGGLE AND VISIBILITY */
+document.querySelectorAll('.eye-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const targetId = btn.dataset.target;
+    const input = document.getElementById(targetId);
+    const eyeIcon = btn.querySelector('.eye-icon');
+    const eyeOffIcon = btn.querySelector('.eye-off-icon');
+
+    // Toggle between password and text type
+    if (input.type === 'password') {
+      input.type = 'text';
+      eyeIcon.style.display = 'none';
+      eyeOffIcon.style.display = 'block';
+    } else {
+      input.type = 'password';
+      eyeIcon.style.display = 'block';
+      eyeOffIcon.style.display = 'none';
+    }
+  });
 });
 
 /* This Logic check if user is already logged in */

@@ -27,6 +27,15 @@
             --display: 'Syne', sans-serif;
         }
 
+        /* Light theme overrides */
+        [data-theme="light"] {
+            --black:  #f5f0e8;
+            --white:  #0a0a0a;
+            --mid:    #e8e3db;
+            --border: #d0cbc3;
+            --muted:  #888;
+        }
+
         body {
             background: var(--black);
             color: var(--white);
@@ -543,13 +552,38 @@
                 grid-column: 2; 
             }
         }
+
+        /* THEME SWITCHER */
+        .theme-toggle-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .theme-toggle-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
     </style>
 </head>
 <body>
     <header>
-        <div class="logo">TaskFree</div>
-        <div class="header-right">
-            <div class="username-badge">Logged in as <span id="username-display">—</span></div>
+        <div class="logo">Task <br> Free</div>
+        <div class="theme-switcher">
+            <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+        </div>
+
+        <div class="username-badge">Logged in as <span id="username-display">—</span></div>
             <button class="logout-btn" id="logout-btn">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
             </button>
@@ -624,6 +658,6 @@
         </div>
     </footer>
 
-    <script src="/js/tasks.js"></script>
+    <script src="js/tasks.js"></script>
 </body>
 </html>

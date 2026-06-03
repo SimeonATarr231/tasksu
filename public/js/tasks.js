@@ -1,3 +1,32 @@
+/* THEME SWTCHER */
+const applyTheme = (theme) => {
+  document.documentElement.setAttribute('data-theme', theme);
+  const icon = document.querySelector('#theme-toggle i');
+  if (!icon) return;
+  if (theme === 'light') {
+    icon.className = 'fa-solid fa-sun';
+  } else {
+    icon.className = 'fa-solid fa-moon';
+  }
+};
+
+const initTheme = () => {
+  const saved = localStorage.getItem('taskfree-theme') || 'dark';
+  applyTheme(saved);
+};
+
+const toggleBtn = document.getElementById('theme-toggle');
+if (toggleBtn) {
+  toggleBtn.addEventListener('click', () => {
+    const current = localStorage.getItem('taskfree-theme') || 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('taskfree-theme', next);
+    applyTheme(next);
+  });
+}
+
+initTheme();
+
 // All tasks fetched from server stored here
 let allTasks = [];
 let currentFilter = 'all';
