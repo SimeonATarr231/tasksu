@@ -1,18 +1,22 @@
-const { Resend } = require('resend');
+const nodemailer = require('nodemailer');
 
-// Initialize Resend with our API key from environment variables
-const resend = new Resend(process.env.RESEND_API_KEY);
+/* Create the email transporter using Gmail */
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD
+  }
+});
 
-/* SEND VERIFICATION EMAIL */
+
+/* Send Verification */
 const sendVerificationEmail = async (toEmail, username, token) => {
-  // Build the verification URL
-  // In development: localhost:5000
-  // In production: your Railway URL
   const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
   const verifyUrl = `${baseUrl}/api/auth/verify-email?token=${token}`;
 
-  await resend.emails.send({
-    from: process.env.FROM_EMAIL,
+  await transporter.sendMail({
+    from: `"TaskSy" <${process.env.FROM_EMAIL}>`,
     to: toEmail,
     subject: 'Verify your TaskSy account',
     html: `
@@ -24,7 +28,7 @@ const sendVerificationEmail = async (toEmail, username, token) => {
         </head>
         <body style="margin:0;padding:0;background:#0a0a0a;font-family:'Courier New',monospace;">
           <div style="max-width:560px;margin:40px auto;padding:40px;border:1px solid #2a2a2a;">
-            
+
             <div style="font-size:1.1rem;font-weight:800;letter-spacing:0.2em;
                         text-transform:uppercase;color:#ff4d00;margin-bottom:32px;">
               TaskSy
@@ -35,7 +39,7 @@ const sendVerificationEmail = async (toEmail, username, token) => {
             </h1>
 
             <p style="color:#666;font-size:0.85rem;line-height:1.7;margin:0 0 32px 0;">
-              You're one step away from accessing your TaskSy account.
+              You are one step away from accessing your TaskSy account.
               Click the button below to verify your email address.
               This link expires in <strong style="color:#f5f0e8;">24 hours</strong>.
             </p>
@@ -49,12 +53,12 @@ const sendVerificationEmail = async (toEmail, username, token) => {
             </a>
 
             <p style="color:#444;font-size:0.75rem;margin:32px 0 0 0;line-height:1.6;">
-              If you didn't create a TaskSy account, you can safely ignore this email.
+              If you did not create a TaskSy account, you can safely ignore this email.
             </p>
 
             <div style="border-top:1px solid #2a2a2a;margin-top:32px;padding-top:20px;">
               <p style="color:#444;font-size:0.7rem;margin:0;">
-                TaskSy — Built for Liberian Students
+                TaskSy — Stay sharp. Stay free.
               </p>
             </div>
 
@@ -66,13 +70,13 @@ const sendVerificationEmail = async (toEmail, username, token) => {
 };
 
 
-/* SEND PASSWORD RESET EMAIL */
+/* Send Password Reset Email */
 const sendPasswordResetEmail = async (toEmail, username, token) => {
   const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
   const resetUrl = `${baseUrl}/reset-password.html?token=${token}`;
 
-  await resend.emails.send({
-    from: process.env.FROM_EMAIL,
+  await transporter.sendMail({
+    from: `"TaskSy" <${process.env.FROM_EMAIL}>`,
     to: toEmail,
     subject: 'Reset your TaskSy password',
     html: `
@@ -112,13 +116,13 @@ const sendPasswordResetEmail = async (toEmail, username, token) => {
             </a>
 
             <p style="color:#444;font-size:0.75rem;margin:32px 0 0 0;line-height:1.6;">
-              If you didn't request a password reset, you can safely ignore this email.
+              If you did not request a password reset, you can safely ignore this email.
               Your password will not change.
             </p>
 
             <div style="border-top:1px solid #2a2a2a;margin-top:32px;padding-top:20px;">
               <p style="color:#444;font-size:0.7rem;margin:0;">
-                TaskSy — Built for Liberian Students
+                TaskSy — Stay sharp. Stay free.
               </p>
             </div>
 

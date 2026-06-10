@@ -1,6 +1,18 @@
+// server/db.js
+
+const Database = require('better-sqlite3');
+const path = require('path');
+
+// Create or connect to the database file
+const db = new Database(path.join(__dirname, '../tasksy.db'));
+console.log('Database path:', path.join(__dirname, '../tasksy.db'));
+
+// Enable WAL mode for better performance
+db.pragma('journal_mode = WAL');
+
 const initDb = () => {
 
-  // Users table — added verified and verification fields
+  // Users table
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id                INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -12,7 +24,7 @@ const initDb = () => {
     )
   `);
 
-  // Tasks table — unchanged
+  // Tasks table
   db.exec(`
     CREATE TABLE IF NOT EXISTS tasks (
       id          INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -26,8 +38,7 @@ const initDb = () => {
     )
   `);
 
-  // Tokens table — stores verification and password reset tokens
-  // type is either 'verification' or 'password_reset'
+  // Tokens table
   db.exec(`
     CREATE TABLE IF NOT EXISTS tokens (
       id         INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,13 +51,16 @@ const initDb = () => {
     )
   `);
 
-  // Add verified column to existing users table if it doesn't exist
-  // This handles the case where the table already exists without the column
+  // Add verified column to existing users if it doesn't exist
   try {
     db.exec(`ALTER TABLE users ADD COLUMN verified INTEGER DEFAULT 0`);
   } catch (e) {
-    // Column already exists — safe to ignore this error
+    // Column already exists — safe to ignore
   }
 
   console.log('Database initialized successfully');
 };
+
+initDb();
+
+module.exports = db;

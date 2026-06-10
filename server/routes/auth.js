@@ -73,11 +73,16 @@ router.post('/register', async (req, res) => {
     `).run(userId, token, expiresAt);
 
     // Send verification email
-    await sendVerificationEmail(email, username, token);
+    try {
+      await sendVerificationEmail(email, username, token);
+      console.log('Verification email sent successfully to:', email);
+    } catch (emailError) {
+        console.error('Email sending failed:', emailError.message);
+    }
 
     res.status(201).json({
-      message: 'Account created! Please check your email to verify your account.',
-      requiresVerification: true
+        message: 'Account created! Please check your email to verify your account.',
+        requiresVerification: true
     });
 
   } catch (error) {
