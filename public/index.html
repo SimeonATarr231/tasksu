@@ -494,29 +494,19 @@
         </div>
 
         <!-- LOGIN FORM -->
-        <div class="form-panel active" id="login">
-            <div class="form-title">Welcome back.</div>
-            <div class="form-subtitle">Enter your credentials to access your tasks.</div>
-
-            <div class="field">
-                <label>Email</label>
-                <input type="email" id="login-email" placeholder="you@example.com">
-            </div>
-
-            <div class="field">
-                <label>Password</label>
-                <div class="input-wrapper">
-                    <input type="password" id="login-password" placeholder="••••••••">
-                    <button class="eye-btn" type="button" data-target="login-password" aria-label="Toggle password visibility">
-                        <i class="fa-regular fa-eye eye-icon"></i>
-                        <i class="fa-regular fa-eye-slash eye-off-icon" style="display:none"></i>
-                    </button>
-                </div>
-            </div>
-            <button class="submit-btn" id="login-btn">Login</button>
+        <button class="submit-btn" id="login-btn">Login</button>
             <div class="message" id="login-message"></div>
-        </div>
+            <div id="resend-section" style="display:none;margin-top:1rem;">
+                <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.5rem;">
+                    Didn't receive the verification email?
+                </p>
+                <button class="tab-btn" id="resend-btn">Resend Verification Email</button>
+            </div>
 
+            <div style="margin-top:1.5rem;text-align:center;">
+                <a href="forgot-password.html" style="font-size:0.75rem;color:var(--muted);text-decoration:none;text-transform:uppercase;letter-spacing:0.1em;transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">Forgot your password?</a>
+            </div>
+            
         <!-- REGISTER FORM -->
         <div class="form-panel" id="register">
             <div class="form-title">Create account.</div>
