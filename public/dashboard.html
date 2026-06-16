@@ -687,6 +687,42 @@
             border-color: var(--muted);
             color: var(--white);
         }
+
+        /* Search Bar */
+        .search-bar {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .search-bar input {
+            width: 100%;
+            background: var(--mid);
+            border: 1px solid var(--border);
+            color: var(--white);
+            font-family: var(--mono);
+            font-size: 0.82rem;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-bar input:focus {
+            border-color: var(--accent);
+        }
+
+        .search-bar input::placeholder {
+            color: var(--muted);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 0.78rem;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -753,6 +789,12 @@
                 <input type="date" id="task-due-date" title="Due date (optional)">
             </div>
             <div id="task-error"></div>
+        </div>
+
+        <!-- Search Bar Filter -->
+        <div class="search-bar">
+            <input type="text" id="task-search" placeholder="Search tasks...">
+            <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
         </div>
 
         <!-- FILTERS -->
