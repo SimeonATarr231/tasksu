@@ -1,48 +1,42 @@
-/* THEME SWITCHING SYSTEM */
+// public/js/auth.js
+
+// ── THEME SYSTEM ───────────────────────────────────────────────
 const applyTheme = (theme) => {
-  document.documentElement.setAttribute('data-theme', theme);
-  const icon = document.querySelector('#theme-toggle i');
-  if (!icon) return;
-  if (theme === 'light') {
-    icon.className = 'fa-solid fa-sun';
+  if (theme === 'system') {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
   } else {
-    icon.className = 'fa-solid fa-moon';
+    document.documentElement.setAttribute('data-theme', theme);
   }
 };
 
 const initTheme = () => {
-  const saved = localStorage.getItem('TasksU-theme') || 'dark';
+  const saved = localStorage.getItem('taskfree-theme') || 'dark';
+  document.querySelectorAll('.theme-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.theme === saved);
+  });
   applyTheme(saved);
 };
 
-const toggleBtn = document.getElementById('theme-toggle');
-if (toggleBtn) {
-  toggleBtn.addEventListener('click', () => {
-    const current = localStorage.getItem('TasksU-theme') || 'dark';
-    const next = current === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('TasksU-theme', next);
-    applyTheme(next);
+document.querySelectorAll('.theme-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const theme = btn.dataset.theme;
+    localStorage.setItem('taskfree-theme', theme);
+    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyTheme(theme);
   });
-}
+});
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+  if (localStorage.getItem('taskfree-theme') === 'system') {
+    applyTheme('system');
+  }
+});
 
 initTheme();
 
-/* Tab switching */
-const tabBtns = document.querySelectorAll('.tab-btn');
-const formPanels = document.querySelectorAll('.form-panel');
-
-tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        const target = btn.dataset.tab;
-        tabBtns.forEach(b => b.classList.remove('active'));
-        formPanels.forEach(p => p.classList.remove('active'));
-
-        btn.classList.add('active');
-        document.getElementById(target).classList.add('active');
-    });
-});
-
-/* Password Toggler */
+// ── PASSWORD TOGGLE ────────────────────────────────────────────
 document.querySelectorAll('.eye-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const targetId = btn.dataset.target;
@@ -62,7 +56,7 @@ document.querySelectorAll('.eye-btn').forEach(btn => {
   });
 });
 
-/* Tab Switching */
+// ── TAB SWITCHING ──────────────────────────────────────────────
 const tabBtns = document.querySelectorAll('.tab-btn');
 const formPanels = document.querySelectorAll('.form-panel');
 
@@ -76,14 +70,14 @@ tabBtns.forEach(btn => {
   });
 });
 
-/* Helper */
+// ── HELPER ─────────────────────────────────────────────────────
 const showMessage = (elementId, text, type) => {
   const el = document.getElementById(elementId);
   el.textContent = text;
   el.className = `message ${type}`;
 };
 
-/* Login */
+// ── LOGIN ──────────────────────────────────────────────────────
 document.getElementById('login-btn').addEventListener('click', async () => {
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
@@ -122,7 +116,7 @@ document.getElementById('login-btn').addEventListener('click', async () => {
   }
 });
 
-/* Register */
+// ── REGISTER ───────────────────────────────────────────────────
 document.getElementById('register-btn').addEventListener('click', async () => {
   const username = document.getElementById('reg-username').value.trim();
   const email = document.getElementById('reg-email').value.trim();
@@ -149,9 +143,9 @@ document.getElementById('register-btn').addEventListener('click', async () => {
       showMessage('register-message', data.error, 'error');
     } else {
       showMessage('register-message', 'Account created! Redirecting...', 'success');
-      setTimeout() => {
+      setTimeout(() => {
         window.location.href = '/dashboard.html';
-      }, 800
+      }, 800);
     }
 
   } catch (error) {
@@ -162,7 +156,7 @@ document.getElementById('register-btn').addEventListener('click', async () => {
   }
 });
 
-/* Check Auth */
+// ── CHECK AUTH ─────────────────────────────────────────────────
 const checkAuth = async () => {
   try {
     const response = await fetch('/api/auth/me');
