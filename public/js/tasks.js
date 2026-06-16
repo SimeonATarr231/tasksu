@@ -75,13 +75,20 @@ const loadTasks = async () => {
 
 /* UPDATE STATE */
 const updateStats = () => {
-  const total = allTasks.length;
-  const done = allTasks.filter(t => t.completed === 1).length;
-  const pending = total - done;
+    const total   = allTasks.length;
+    const done    = allTasks.filter(t => t.completed === 1).length;
+    const pending = total - done;
+    const today   = new Date().toISOString().split('T')[0];
+    const overdue = allTasks.filter(t =>
+        t.completed === 0 &&
+        t.due_date &&
+        t.due_date < today
+    ).length;
 
-  document.getElementById('stat-total').textContent = total;
-  document.getElementById('stat-pending').textContent = pending;
-  document.getElementById('stat-done').textContent = done;
+    document.getElementById('stat-total').textContent   = total;
+    document.getElementById('stat-pending').textContent = pending;
+    document.getElementById('stat-done').textContent    = done;
+    document.getElementById('stat-overdue').textContent = overdue;
 };
 
 /* RENDER TASK */
@@ -125,10 +132,14 @@ const renderTasks = () => {
             ${task.description
               ? `<div class="task-description">${escapeHtml(task.description)}</div>`
               : ''}
-            <div class="task-meta">
-              <span class="priority-tag ${task.priority}">${task.priority}</span>
-              <span class="task-date">${formatDate(task.created_at)}</span>
-            </div>
+              <div class="task-meta">
+                  <span class="priority-tag ${task.priority}">${task.priority}</span>
+                  <span class="task-date">${formatDate(task.created_at)}</span>
+                  ${task.due_date ? (() => {
+                      const due = formatDueDate(task.due_date);
+                      return `<span class="due-date-display ${due.class}">${due.text}</span>`;
+                  })() : ''}
+              </div>
           </div>
 
           <div class="task-actions">
@@ -149,6 +160,7 @@ document.getElementById('add-task-btn').addEventListener('click', async () => {
   const title = document.getElementById('task-title').value.trim();
   const description = document.getElementById('task-description').value.trim();
   const priority = document.getElementById('task-priority').value;
+  const due_date = document.getElementById('task-due-date').value || null;
   const btn = document.getElementById('add-task-btn');
 
   if (!title) {
@@ -166,7 +178,7 @@ document.getElementById('add-task-btn').addEventListener('click', async () => {
     const response = await fetch('/api/tasks', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, description, priority })
+      body: JSON.stringify({ title, description, priority, due_date })
     });
 
     const data = await response.json();
@@ -179,6 +191,7 @@ document.getElementById('add-task-btn').addEventListener('click', async () => {
       document.getElementById('task-title').value = '';
       document.getElementById('task-description').value = '';
       document.getElementById('task-priority').value = 'medium';
+      document.getElementById('task-due-date').value = '';
     }
 
   } catch (error) {
@@ -258,8 +271,38 @@ const escapeHtml = (str) => {
 };
 
 const formatDate = (dateStr) => {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+};
+
+// New function for due date display
+const formatDueDate = (dueDateStr) => {
+    if (!dueDateStr) return null;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const dueDate = new Date(dueDateStr);
+    dueDate.setHours(0, 0, 0, 0);
+
+    const diffTime = dueDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    const formatted = dueDate.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+
+    if (diffDays < 0) return { text: `Overdue · ${formatted}`, class: 'overdue' };
+    if (diffDays === 0) return { text: `Due today · ${formatted}`, class: 'due-today' };
+    if (diffDays === 1) return { text: `Due tomorrow · ${formatted}`, class: '' };
+    return { text: `Due ${formatted}`, class: '' };
 };
 
 /* INITIALIZATION */

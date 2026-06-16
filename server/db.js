@@ -1,12 +1,11 @@
-const Database = require('better-sqlite3');
-const path = require('path');
+const Database = require("better-sqlite3");
+const path = require("path");
 
-const db = new Database(path.join(__dirname, '../TasksU.db'));
+const db = new Database(path.join(__dirname, "../TasksU.db"));
 
-db.pragma('journal_mode = WAL');
+db.pragma("journal_mode = WAL");
 
 const initDb = () => {
-
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id         INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -25,12 +24,20 @@ const initDb = () => {
       description TEXT,
       priority    TEXT    DEFAULT 'medium',
       completed   INTEGER DEFAULT 0,
+      due_date    TEXT,
       created_at  TEXT    DEFAULT (datetime('now')),
       FOREIGN KEY (user_id) REFERENCES users(id)
     )
   `);
 
-  console.log('Database initialized successfully');
+  // Add due_date column to existing tasks if it doesn't exist
+  try {
+    db.exec(`ALTER TABLE tasks ADD COLUMN due_date TEXT`);
+  } catch (e) {
+    // Column already exists — safe to ignore
+  }
+
+  console.log("Database initialized successfully");
 };
 
 initDb();

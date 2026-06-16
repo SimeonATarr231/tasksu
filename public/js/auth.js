@@ -1,6 +1,4 @@
-// public/js/auth.js
-
-// ── THEME SYSTEM ───────────────────────────────────────────────
+/* THEME SYSTEM */
 const applyTheme = (theme) => {
   if (theme === 'system') {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
