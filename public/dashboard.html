@@ -616,6 +616,77 @@
         #stat-overdue {
             color: #ff4d00;
         }
+
+        /* Edit Form */
+        .task-edit-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex: 1;
+        }
+
+        .edit-title,
+        .edit-description,
+        .edit-priority,
+        .edit-due-date {
+            background: var(--mid);
+            border: 1px solid var(--border);
+            color: var(--white);
+            font-family: var(--mono);
+            font-size: 0.82rem;
+            padding: 0.5rem 0.75rem;
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+
+        .edit-title:focus,
+        .edit-description:focus,
+        .edit-priority:focus,
+        .edit-due-date:focus {
+            border-color: var(--accent);
+        }
+
+        .edit-description {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .edit-row {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .edit-priority {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .edit-due-date {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .edit-due-date::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+            opacity: 0.6;
+        }
+
+        .task-action-btn.save {
+            border-color: #00cc66;
+            color: #00cc66;
+        }
+
+        .task-action-btn.save:hover {
+            background: #00cc66;
+            color: var(--black);
+        }
+
+        .task-action-btn.cancel:hover {
+            border-color: var(--muted);
+            color: var(--white);
+        }
     </style>
 </head>
 <body>

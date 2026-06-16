@@ -143,8 +143,10 @@ const renderTasks = () => {
           </div>
 
           <div class="task-actions">
+            <button class="task-action-btn"
+            onclick="editTask(${task.id})">Edit</button>
             <button class="task-action-btn delete"
-                    onclick="deleteTask(${task.id})">Delete</button>
+            onclick="deleteTask(${task.id})">Delete</button>
           </div>
 
         </div>
@@ -240,6 +242,83 @@ const deleteTask = async (taskId) => {
 
   } catch (error) {
     console.error('Delete error:', error);
+  }
+};
+
+/* EDIT TASK */
+const editTask = (taskId) => {
+  const task = allTasks.find(t => t.id === taskId);
+  if (!task) return;
+
+  // Find the task item element
+  const taskItem = document.querySelector(`[data-id="${taskId}"]`);
+  if (!taskItem) return;
+
+  // Replace task content with editable form
+  taskItem.innerHTML = `
+    <div class="task-check ${task.completed ? 'checked' : ''}"
+         onclick="toggleComplete(${task.id}, ${task.completed})">
+    </div>
+
+    <div class="task-edit-form">
+      <input type="text" class="edit-title" value="${escapeHtml(task.title)}"
+             placeholder="Task title">
+      <textarea class="edit-description"
+                placeholder="Description (optional)">${task.description ? escapeHtml(task.description) : ''}</textarea>
+      <div class="edit-row">
+        <select class="edit-priority">
+          <option value="low" ${task.priority === 'low' ? 'selected' : ''}>Low</option>
+          <option value="medium" ${task.priority === 'medium' ? 'selected' : ''}>Medium</option>
+          <option value="high" ${task.priority === 'high' ? 'selected' : ''}>High</option>
+        </select>
+        <input type="date" class="edit-due-date"
+               value="${task.due_date || ''}">
+      </div>
+    </div>
+
+    <div class="task-actions">
+      <button class="task-action-btn save"
+              onclick="saveTask(${task.id})">Save</button>
+      <button class="task-action-btn cancel"
+              onclick="renderTasks()">Cancel</button>
+    </div>
+  `;
+};
+
+/* SAVE EDITED TASK */
+const saveTask = async (taskId) => {
+  const taskItem = document.querySelector(`[data-id="${taskId}"]`);
+  if (!taskItem) return;
+
+  const title = taskItem.querySelector('.edit-title').value.trim();
+  const description = taskItem.querySelector('.edit-description').value.trim();
+  const priority = taskItem.querySelector('.edit-priority').value;
+  const due_date = taskItem.querySelector('.edit-due-date').value || null;
+
+  if (!title) {
+    taskItem.querySelector('.edit-title').style.borderColor = 'var(--accent)';
+    taskItem.querySelector('.edit-title').focus();
+    return;
+  }
+
+  try {
+    const response = await fetch(`/api/tasks/${taskId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, description, priority, due_date })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      const index = allTasks.findIndex(t => t.id === taskId);
+      if (index !== -1) allTasks[index] = data.task;
+      renderTasks();
+      updateStats();
+    }
+
+  } catch (error) {
+    console.error('Save task error:', error);
   }
 };
 
