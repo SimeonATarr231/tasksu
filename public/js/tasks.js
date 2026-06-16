@@ -104,7 +104,14 @@ const renderTasks = () => {
     filtered = allTasks.filter(t => t.completed === 1);
   } else if (currentFilter === 'high') {
     filtered = allTasks.filter(t => t.priority === 'high');
-  }
+  } else if (currentFilter === 'overdue') {
+    const today = new Date().toISOString().split('T')[0];
+    filtered = allTasks.filter(t =>
+        t.completed === 0 &&
+        t.due_date &&
+        t.due_date < today
+    );
+}
 
   // Empty state
   if (filtered.length === 0) {
