@@ -1,10 +1,10 @@
-# TaskFree
+# tasku
 
 A fullstack task manager web application built with Node.js, Express, SQLite, and vanilla JavaScript.
 
 ## Live Demo
 
-[taskfree-production.up.railway.app](https://taskfree-production.up.railway.app)
+[tasku-production.up.railway.app](https://tasku-production.up.railway.app)
 
 ## Features
 
@@ -34,8 +34,8 @@ A fullstack task manager web application built with Node.js, Express, SQLite, an
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/SimeonATarr231/taskfree.git
-cd taskfree
+git clone https://github.com/SimeonATarr231/tasku.git
+cd tasku
 ```
 
 **2. Install dependencies**
@@ -53,7 +53,7 @@ npm run dev
 **5. Open your browser**
 
 ## Project Structure
-taskfree/
+tasku/
 ├── server/
 │   ├── index.js          # Entry point
 │   ├── db.js             # Database connection

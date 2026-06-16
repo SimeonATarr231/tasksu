@@ -11,16 +11,16 @@ const applyTheme = (theme) => {
 };
 
 const initTheme = () => {
-  const saved = localStorage.getItem('taskfree-theme') || 'dark';
+  const saved = localStorage.getItem('tasku-theme') || 'dark';
   applyTheme(saved);
 };
 
 const toggleBtn = document.getElementById('theme-toggle');
 if (toggleBtn) {
   toggleBtn.addEventListener('click', () => {
-    const current = localStorage.getItem('taskfree-theme') || 'dark';
+    const current = localStorage.getItem('tasku-theme') || 'dark';
     const next = current === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('taskfree-theme', next);
+    localStorage.setItem('tasku-theme', next);
     applyTheme(next);
   });
 }

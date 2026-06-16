@@ -1,5 +1,5 @@
 {
-  "name": "tasksy",
+  "name": "TaskU",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -17,9 +17,7 @@
     "connect-sqlite3": "^0.9.16",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "express-session": "^1.19.0",
-    "nodemailer": "^8.0.10",
-    "resend": "^6.12.4"
+    "express-session": "^1.19.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
