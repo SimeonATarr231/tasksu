@@ -9,7 +9,7 @@ const requireAuth = require("../middleware/auth");
 // CREATE TASK
 // POST /api/tasks
 router.post("/", requireAuth, (req, res) => {
-  const { title, description, priority, due_date } = req.body;
+  const { title, description, priority, due_date, category } = req.body;
 
   // Validate - title is the only required field
   if (!title) {
@@ -24,8 +24,8 @@ router.post("/", requireAuth, (req, res) => {
     const result = db
       .prepare(
         `
-    INSERT INTO tasks (user_id, title, description, priority, due_date)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO tasks (user_id, title, description, priority, due_date, category)
+    VALUES (?, ?, ?, ?, ?, ?)
   `,
       )
       .run(
@@ -34,6 +34,7 @@ router.post("/", requireAuth, (req, res) => {
         description || null,
         taskPriority,
         due_date || null,
+        category || null
       );
 
     // Fetch the newly created task to return it
@@ -74,7 +75,7 @@ router.get("/", requireAuth, (req, res) => {
 // UPDATE TASK
 // PUT /api/tasks/:id
 router.put("/:id", requireAuth, (req, res) => {
-  const { title, description, priority, completed, due_date } = req.body;
+  const { title, description, priority, completed, due_date, category } = req.body;
   const taskId = req.params.id;
 
   try {
@@ -99,17 +100,19 @@ router.put("/:id", requireAuth, (req, res) => {
         description = ?,
         priority = ?,
         completed = ?,
-        due_date = ?
+        due_date = ?,
+        category = ?
     WHERE id = ? AND user_id = ?
-    `).run(
-      title ?? task.title,
-      description ?? task.description,
-      priority ?? task.priority,
-      completed !== undefined ? (completed ? 1 : 0) : task.completed,
-      due_date !== undefined ? (due_date || null) : task.due_date,
-      taskId,
-      req.user.id
-    );
+  `).run(
+    title ?? task.title,
+    description ?? task.description,
+    priority ?? task.priority,
+    completed !== undefined ? (completed ? 1 : 0) : task.completed,
+    due_date !== undefined ? (due_date || null) : task.due_date,
+    category !== undefined ? (category || null) : task.category,
+    taskId,
+    req.user.id
+  );
 
     // Fetch and return the updated task
     const updated = db.prepare("SELECT * FROM tasks WHERE id = ?").get(taskId);

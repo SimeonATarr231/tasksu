@@ -37,6 +37,12 @@ const initDb = () => {
     // Column already exists — safe to ignore
   }
 
+  try {
+    db.exec(`ALTER TABLE tasks ADD COLUMN category TEXT`);
+  } catch (e) {
+    // Clumn already exist - safe to ignore
+  }
+
   console.log("Database initialized successfully");
 };
 

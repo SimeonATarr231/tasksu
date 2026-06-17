@@ -28,7 +28,7 @@ if (toggleBtn) {
 initTheme();
 
 // All tasks fetched from server stored here
-let searchQuery = '';
+let searchQuery = "";
 let allTasks = [];
 let currentFilter = "all";
 
@@ -122,6 +122,9 @@ const renderTasks = () => {
     filtered = allTasks.filter(
       (t) => t.completed === 0 && t.due_date && t.due_date < today,
     );
+  } else if (currentFilter.startsWith('cat-')) {
+    const cat = currentFilter.replace('cat-', '');
+    filter = filtered.filter(t => t.category === cat);
   }
 
   // Empty state
@@ -156,15 +159,12 @@ const renderTasks = () => {
             }
               <div class="task-meta">
                   <span class="priority-tag ${task.priority}">${task.priority}</span>
+                  ${task.category ? `<span class="category-tag ${task.category}">${task.category}</span>` : ''}
                   <span class="task-date">${formatDate(task.created_at)}</span>
-                  ${
-                    task.due_date
-                      ? (() => {
-                          const due = formatDueDate(task.due_date);
-                          return `<span class="due-date-display ${due.class}">${due.text}</span>`;
-                        })()
-                      : ""
-                  }
+                  ${task.due_date ? (() => {
+                      const due = formatDueDate(task.due_date);
+                      return `<span class="due-date-display ${due.class}">${due.text}</span>`;
+                  })() : ''}
               </div>
           </div>
 
@@ -191,6 +191,7 @@ document.getElementById("add-task-btn").addEventListener("click", async () => {
   const description = document.getElementById("task-description").value.trim();
   const priority = document.getElementById("task-priority").value;
   const due_date = document.getElementById("task-due-date").value || null;
+  const category = document.getElementById("task-category").value || null;
   const btn = document.getElementById("add-task-btn");
 
   if (!title) {
@@ -208,7 +209,7 @@ document.getElementById("add-task-btn").addEventListener("click", async () => {
     const response = await fetch("/api/tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description, priority, due_date }),
+      body: JSON.stringify({ title, description, priority, due_date, category }),
     });
 
     const data = await response.json();
@@ -222,6 +223,7 @@ document.getElementById("add-task-btn").addEventListener("click", async () => {
       document.getElementById("task-description").value = "";
       document.getElementById("task-priority").value = "medium";
       document.getElementById("task-due-date").value = "";
+      document.getElementById("task-category").value = "";
     }
   } catch (error) {
     console.error("Add task error:", error);
@@ -292,14 +294,24 @@ const editTask = (taskId) => {
              placeholder="Task title">
       <textarea class="edit-description"
                 placeholder="Description (optional)">${task.description ? escapeHtml(task.description) : ""}</textarea>
+
       <div class="edit-row">
-        <select class="edit-priority">
-          <option value="low" ${task.priority === "low" ? "selected" : ""}>Low</option>
-          <option value="medium" ${task.priority === "medium" ? "selected" : ""}>Medium</option>
-          <option value="high" ${task.priority === "high" ? "selected" : ""}>High</option>
-        </select>
-        <input type="date" class="edit-due-date"
-               value="${task.due_date || ""}">
+          <select class="edit-priority">
+              <option value="low" ${task.priority === 'low' ? 'selected' : ''}>Low</option>
+              <option value="medium" ${task.priority === 'medium' ? 'selected' : ''}>Medium</option>
+              <option value="high" ${task.priority === 'high' ? 'selected' : ''}>High</option>
+          </select>
+          <select class="edit-category">
+              <option value="" ${!task.category ? 'selected' : ''}>No Category</option>
+              <option value="work" ${task.category === 'work' ? 'selected' : ''}>Work</option>
+              <option value="study" ${task.category === 'study' ? 'selected' : ''}>Study</option>
+              <option value="personal" ${task.category === 'personal' ? 'selected' : ''}>Personal</option>
+              <option value="health" ${task.category === 'health' ? 'selected' : ''}>Health</option>
+              <option value="finance" ${task.category === 'finance' ? 'selected' : ''}>Finance</option>
+              <option value="other" ${task.category === 'other' ? 'selected' : ''}>Other</option>
+          </select>
+          <input type="date" class="edit-due-date"
+                value="${task.due_date || ''}">
       </div>
     </div>
 
@@ -321,6 +333,7 @@ const saveTask = async (taskId) => {
   const description = taskItem.querySelector(".edit-description").value.trim();
   const priority = taskItem.querySelector(".edit-priority").value;
   const due_date = taskItem.querySelector(".edit-due-date").value || null;
+  const category = taskItem.querySelector('.edit-category').value || null;
 
   if (!title) {
     taskItem.querySelector(".edit-title").style.borderColor = "var(--accent)";
@@ -332,7 +345,7 @@ const saveTask = async (taskId) => {
     const response = await fetch(`/api/tasks/${taskId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description, priority, due_date }),
+      body: JSON.stringify({ title, description, priority, due_date, category }),
     });
 
     const data = await response.json();
@@ -349,9 +362,9 @@ const saveTask = async (taskId) => {
 };
 
 /* Search */
-document.getElementById('task-search').addEventListener('input', (e) => {
-    searchQuery = e.target.value.trim();
-    renderTasks();
+document.getElementById("task-search").addEventListener("input", (e) => {
+  searchQuery = e.target.value.trim();
+  renderTasks();
 });
 
 /* FILTERS */

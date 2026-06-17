@@ -235,7 +235,8 @@
         .add-task-bottom {
             display: flex;
             gap: 0.75rem;
-            align-items: flex-start;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
         /* FILTERS */
@@ -723,6 +724,64 @@
             font-size: 0.78rem;
             pointer-events: none;
         }
+
+        /* Categories */
+        #task-category,
+        .edit-category {
+            background: var(--mid);
+            border: 1px solid var(--border);
+            color: var(--white);
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            padding: 0.6rem 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+            cursor: pointer;
+        }
+
+        #task-category:focus,
+        .edit-category:focus {
+            border-color: var(--accent);
+        }
+
+        .category-tag {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.2rem 0.5rem;
+            border: 1px solid;
+            border-radius: 2px;
+        }
+
+        .category-tag.work { 
+            color: #4d9fff; 
+            border-color: #4d9fff; 
+        }
+
+        .category-tag.study { 
+            color: #b44dff; 
+            border-color: #b44dff; 
+        }
+
+        .category-tag.personal { 
+            color: #ff4d9f; 
+            border-color: #ff4d9f; 
+        }
+
+        .category-tag.health { 
+            color: #00cc66; 
+            border-color: #00cc66; 
+        }
+
+        .category-tag.finance { 
+            color: #ffaa00; 
+            border-color: #ffaa00; 
+        }
+
+        .category-tag.other { 
+            color: #888;    
+            border-color: #888; 
+        }
     </style>
 </head>
 <body>
@@ -787,6 +846,15 @@
 
             <div class="add-task-bottom">
                 <input type="date" id="task-due-date" title="Due date (optional)">
+                <select id="task-category">
+                    <option value="">No Category</option>
+                    <option value="work">Work</option>
+                    <option value="study">Study</option>
+                    <option value="personal">Personal</option>
+                    <option value="health">Health</option>
+                    <option value="finance">Finance</option>
+                    <option value="other">Other</option>
+                </select>
             </div>
             <div id="task-error"></div>
         </div>
@@ -804,6 +872,15 @@
             <button class="filter-btn" data-filter="completed">Completed</button>
             <button class="filter-btn" data-filter="high">High Priority</button>
             <button class="filter-btn" data-filter="overdue">Overdue</button>
+        </div>
+
+        <div class="filters" style="margin-top:0.5rem;">
+            <button class="filter-btn" data-filter="cat-work">Work</button>
+            <button class="filter-btn" data-filter="cat-study">Study</button>
+            <button class="filter-btn" data-filter="cat-personal">Personal</button>
+            <button class="filter-btn" data-filter="cat-health">Health</button>
+            <button class="filter-btn" data-filter="cat-finance">Finance</button>
+            <button class="filter-btn" data-filter="cat-other">Other</button>
         </div>
 
         <!-- TASK LIST -->
