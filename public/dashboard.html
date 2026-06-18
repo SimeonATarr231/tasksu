@@ -82,18 +82,19 @@
             background: none;
             border: 1px solid var(--border);
             color: var(--muted);
-            font-family: var(--mono);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            padding: 0.4rem 0.9rem;
+            font-size: 0.85rem;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .logout-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
+            border-color: #ff4444;
+            color: #ff4444;
         }
 
         /* MAIN LAYOUT */
@@ -344,7 +345,7 @@
         }
 
         .task-meta {
-            ddisplay: flex;
+            display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
             align-items: center;
@@ -845,22 +846,62 @@
             color: #888;    
             border-color: #888; 
         }
+
+        /* Overdue Badge */
+        .overdue-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #ff4d00;
+            color: #0a0a0a;
+            font-size: 0.6rem;
+            font-weight: 700;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            padding: 0 4px;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+
+        /* Profile Link */
+        .profile-link {
+            color: var(--muted);
+            font-size: 0.85rem;
+            text-decoration: none;
+            width: 34px;
+            height: 34px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .profile-link:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
     </style>
 </head>
 <body>
     <header>
         <div class="logo">TasksU</div>
-        <div class="theme-switcher">
-            <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
-                <i class="fa-solid fa-moon"></i>
-            </button>
-        </div>
+            <div class="header-right">
+                <div class="username-badge">Logged in as <span id="username-display">—</span></div>
 
-        <div class="username-badge">Logged in as <span id="username-display">—</span></div>
-            <button class="logout-btn" id="logout-btn">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i>
-            </button>
-        </div>
+                <a href="profile.html" class="profile-link" aria-label="Profile">
+                    <i class="fa-solid fa-user"></i>
+                </a>
+
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+
+                <button class="logout-btn" id="logout-btn" aria-label="Logout">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </button>
+            </div>
     </header>
 
     <main>
@@ -934,7 +975,9 @@
             <button class="filter-btn" data-filter="pending">Pending</button>
             <button class="filter-btn" data-filter="completed">Completed</button>
             <button class="filter-btn" data-filter="high">High Priority</button>
-            <button class="filter-btn" data-filter="overdue">Overdue</button>
+            <button class="filter-btn" data-filter="overdue">
+                Overdue <span id="overdue-badge" class="overdue-badge" style="display:none"></span>
+            </button>
         </div>
 
         <div class="filters" style="margin-top:0.5rem;">

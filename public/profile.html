@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TasksU | Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Styling -->
+    <style>
+        *, 
+        *::before, 
+        *::after { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
+
+        :root {
+            --black:   #0a0a0a;
+            --white:   #f5f0e8;
+            --accent:  #ff4d00;
+            --mid:     #1a1a1a;
+            --border:  #2a2a2a;
+            --muted:   #666;
+            --mono:    'Space Mono', monospace;
+            --display: 'Syne', sans-serif;
+        }
+
+        [data-theme="light"] {
+            --black:  #f5f0e8;
+            --white:  #0a0a0a;
+            --mid:    #e8e3db;
+            --border: #d0cbc3;
+            --muted:  #888;
+        }
+
+        body {
+            background: var(--black);
+            color: var(--white);
+            font-family: var(--mono);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-family: var(--display);
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .back-link {
+            font-size: 0.75rem;
+            color: var(--muted);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover { 
+            color: var(--accent); 
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.4rem 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Main */
+        main {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .page-header h1 {
+            font-family: var(--display);
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.4rem;
+        }
+
+        .page-header p {
+            color: var(--muted);
+            font-size: 0.78rem;
+        }
+
+        /* Cards */
+        .card {
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-family: var(--display);
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Account Info */
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.82rem;
+        }
+
+        .info-row:last-child { 
+            border-bottom: none; 
+        }
+
+        .info-label {
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.7rem;
+        }
+
+        .info-value { 
+            color: var(--white); 
+        }
+
+        /* Form Filed */
+        .field { margin-bottom: 1rem; }
+
+        .field label {
+            display: block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .field input {
+            width: 100%;
+            background: var(--mid);
+            border: 1px solid var(--border);
+            color: var(--white);
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            padding: 0.75rem 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+            display: block;
+        }
+
+        .field input:focus { 
+            border-color: var(--accent); 
+        }
+
+        .field input::placeholder { 
+            color: #444; 
+        }
+
+        /* Buttons */
+        .save-btn {
+            background: var(--accent);
+            color: var(--black);
+            border: none;
+            font-family: var(--display);
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        .save-btn:hover { opacity: 0.85; }
+        .save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .danger-btn {
+            background: none;
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            font-family: var(--display);
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        .danger-btn:hover {
+            background: #ff4444;
+            color: var(--black);
+        }
+
+        .danger-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Message */
+            .message {
+            font-size: 0.78rem;
+            padding: 0.75rem 1rem;
+            margin-top: 0.75rem;
+            display: none;
+        }
+
+        .message.error {
+            background: rgba(255,77,0,0.1);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            display: block;
+        }
+
+        .message.success {
+            background: rgba(0,255,100,0.08);
+            border: 1px solid #00ff64;
+            color: #00ff64;
+            display: block;
+        }
+
+        /* Danger Zone */
+        .danger-card {
+            border: 1px solid #ff4444;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .danger-card .card-title {
+            color: #ff4444;
+            border-bottom-color: #ff444433;
+        }
+
+        .danger-description {
+            color: var(--muted);
+            font-size: 0.78rem;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsiveness */
+        @media (max-width: 600px) {
+            header { 
+                padding: 1rem; 
+                flex-wrap: wrap; 
+                gap: 0.5rem; 
+            }
+
+            main { 
+                padding: 1.5rem 1rem; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/dashboard.html" class="logo">TasksU</a>
+        <div class="header-right">
+        <a href="/dashboard.html" class="back-link">← Back to Dashboard</a>
+        <button class="logout-btn" id="logout-btn">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+        <h1>Your Profile</h1>
+        <p id="profile-subtitle">Manage your account settings.</p>
+        </div>
+
+        <!-- ACCOUNT INFO -->
+        <div class="card">
+            <div class="card-title">Account Information</div>
+            <div class="info-row">
+                <span class="info-label">Username</span>
+                <span class="info-value" id="info-username">—</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Email</span>
+                <span class="info-value" id="info-email">—</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Member Since</span>
+                <span class="info-value" id="info-created">—</span>
+            </div>
+        </div>
+
+        <!-- CHANGE USERNAME -->
+        <div class="card">
+            <div class="card-title">Change Username</div>
+            <div class="field">
+                <label>New Username</label>
+                <input type="text" id="new-username" placeholder="Enter new username">
+            </div>
+            <button class="save-btn" id="save-username-btn">Save Username</button>
+            <div class="message" id="username-message"></div>
+        </div>
+
+        <!-- CHANGE PASSWORD -->
+        <div class="card">
+            <div class="card-title">Change Password</div>
+            <div class="field">
+                <label>Current Password</label>
+                <input type="password" id="current-password" placeholder="••••••••">
+            </div>
+
+            <div class="field">
+                <label>New Password</label>
+                <input type="password" id="new-password" placeholder="min. 6 characters">
+            </div>
+
+            <div class="field">
+                <label>Confirm New Password</label>
+                <input type="password" id="confirm-password" placeholder="repeat new password">
+            </div>
+            <button class="save-btn" id="save-password-btn">Save Password</button>
+            <div class="message" id="password-message"></div>
+        </div>
+
+        <!-- DANGER ZONE -->
+        <div class="danger-card">
+            <div class="card-title">Danger Zone</div>
+            <p class="danger-description">
+                Permanently delete your account and all your tasks.
+                This action cannot be undone.
+            </p>
+            
+            <div class="field">
+                <label>Confirm with your password</label>
+                <input type="password" id="delete-password" placeholder="Enter your password">
+            </div>
+
+            <button class="danger-btn" id="delete-account-btn">Delete My Account</button>
+            <div class="message" id="delete-message"></div>
+        </div>
+
+    </main>
+
+    <script>
+        // THEME
+        const saved = localStorage.getItem('taskfree-theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', saved);
+
+        // HELPER
+        const showMessage = (id, text, type) => {
+        const el = document.getElementById(id);
+        el.textContent = text;
+        el.className = `message ${type}`;
+        };
+
+        // AUTH CHECK + LOAD PROFILE
+        const loadProfile = async () => {
+        try {
+            const response = await fetch('/api/user/profile');
+            const data = await response.json();
+
+            if (!response.ok) {
+            window.location.href = '/index.html';
+            return;
+            }
+
+            const user = data.user;
+            document.getElementById('info-username').textContent = user.username;
+            document.getElementById('info-email').textContent = user.email;
+            document.getElementById('info-created').textContent =
+            new Date(user.created_at).toLocaleDateString('en-GB', {
+                day: '2-digit', month: '2-digit', year: 'numeric'
+            });
+            document.getElementById('new-username').value = user.username;
+
+        } catch (error) {
+            window.location.href = '/index.html';
+        }
+        };
+
+        loadProfile();
+
+        // CHANGE USERNAME
+        document.getElementById('save-username-btn').addEventListener('click', async () => {
+        const username = document.getElementById('new-username').value.trim();
+        const btn = document.getElementById('save-username-btn');
+
+        if (!username) {
+            return showMessage('username-message', 'Username cannot be empty', 'error');
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Saving...';
+
+        try {
+            const response = await fetch('/api/user/username', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+            showMessage('username-message', data.error, 'error');
+            } else {
+            showMessage('username-message', data.message, 'success');
+            document.getElementById('info-username').textContent = data.username;
+            }
+
+        } catch (error) {
+            showMessage('username-message', 'Could not connect to server', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Save Username';
+        }
+        });
+
+        // CHANGE PASSWORD
+        document.getElementById('save-password-btn').addEventListener('click', async () => {
+        const currentPassword = document.getElementById('current-password').value;
+        const newPassword = document.getElementById('new-password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+        const btn = document.getElementById('save-password-btn');
+
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            return showMessage('password-message', 'All fields are required', 'error');
+        }
+
+        if (newPassword !== confirmPassword) {
+            return showMessage('password-message', 'New passwords do not match', 'error');
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Saving...';
+
+        try {
+            const response = await fetch('/api/user/password', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ currentPassword, newPassword, confirmPassword })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+            showMessage('password-message', data.error, 'error');
+            } else {
+            showMessage('password-message', data.message, 'success');
+            document.getElementById('current-password').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            }
+
+        } catch (error) {
+            showMessage('password-message', 'Could not connect to server', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Save Password';
+        }
+        });
+
+        // DELETE ACCOUNT
+        document.getElementById('delete-account-btn').addEventListener('click', async () => {
+        const password = document.getElementById('delete-password').value;
+        const btn = document.getElementById('delete-account-btn');
+
+        if (!password) {
+            return showMessage('delete-message', 'Please enter your password to confirm', 'error');
+        }
+
+        if (!confirm('Are you sure? This will permanently delete your account and all your tasks. This cannot be undone.')) {
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Deleting...';
+
+        try {
+            const response = await fetch('/api/user/account', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+            showMessage('delete-message', data.error, 'error');
+            } else {
+            window.location.href = '/index.html';
+            }
+
+        } catch (error) {
+            showMessage('delete-message', 'Could not connect to server', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Delete My Account';
+        }
+        });
+
+        // LOGOUT
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+        try {
+            await fetch('/api/auth/logout', { method: 'POST' });
+            window.location.href = '/index.html';
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
+        });
+    </script>
+</body>
+</html>

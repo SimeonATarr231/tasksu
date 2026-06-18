@@ -95,6 +95,15 @@ const updateStats = () => {
   document.getElementById("stat-pending").textContent = pending;
   document.getElementById("stat-done").textContent = done;
   document.getElementById("stat-overdue").textContent = overdue;
+
+  // Update overdue badge on filter button
+    const badge = document.getElementById('overdue-badge');
+    if (overdue > 0) {
+        badge.textContent = overdue;
+        badge.style.display = 'inline-flex';
+    } else {
+        badge.style.display = 'none';
+    }
 };
 
 /* RENDER TASK */

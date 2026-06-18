@@ -35,6 +35,9 @@ app.use('/api/auth', authRoutes);
 const taskRoutes = require('./routes/tasks');
 app.use('/api/tasks', taskRoutes);
 
+const userRoutes = require('./routes/user');
+app.use('/api/user', userRoutes);
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'TasksU server is running' });
 });
