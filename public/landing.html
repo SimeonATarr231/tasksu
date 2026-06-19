@@ -1,1033 +1,1916 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TasksU | Manage Tasks. Stay Sharp.</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --black:   #0a0a0a;
-      --white:   #f5f0e8;
-      --accent:  #ff4d00;
-      --mid:     #1a1a1a;
-      --border:  #2a2a2a;
-      --muted:   #666;
-      --mono:    'Space Mono', monospace;
-      --display: 'Syne', sans-serif;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--black);
-      color: var(--white);
-      font-family: var(--mono);
-      line-height: 1.6;
-    }
-
-    a { text-decoration: none; color: inherit; }
-
-    /* ── NAVBAR ───────────────────────────────────────── */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(10,10,10,0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border);
-      padding: 1rem 2.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .nav-logo {
-      font-family: var(--display);
-      font-size: 1.1rem;
-      font-weight: 800;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .nav-login {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--muted);
-      transition: color 0.2s;
-      padding: 0.5rem 1rem;
-      border: 1px solid var(--border);
-    }
-
-    .nav-login:hover { color: var(--white); border-color: var(--white); }
-
-    .nav-cta {
-      font-family: var(--display);
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--black);
-      background: var(--accent);
-      padding: 0.5rem 1.25rem;
-      transition: opacity 0.2s;
-    }
-
-    .nav-cta:hover { opacity: 0.85; }
-
-    /* ── HERO ─────────────────────────────────────────── */
-    .hero {
-      min-height: 92vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 4rem 2rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -200px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 800px;
-      height: 800px;
-      background: radial-gradient(circle, rgba(255,77,0,0.08) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero-badge {
-      display: inline-block;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.2em;
-      color: var(--accent);
-      border: 1px solid var(--accent);
-      padding: 0.35rem 1rem;
-      margin-bottom: 2rem;
-    }
-
-    .hero h1 {
-      font-family: var(--display);
-      font-size: clamp(3rem, 8vw, 6rem);
-      font-weight: 800;
-      line-height: 1.0;
-      margin-bottom: 1.5rem;
-      max-width: 900px;
-    }
-
-    .hero h1 span { color: var(--accent); display: block; }
-
-    .hero-sub {
-      font-size: 0.9rem;
-      color: var(--muted);
-      max-width: 520px;
-      line-height: 1.8;
-      margin-bottom: 2.5rem;
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 4rem;
-    }
-
-    .btn-primary {
-      font-family: var(--display);
-      font-size: 0.85rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--black);
-      background: var(--accent);
-      padding: 1rem 2rem;
-      transition: opacity 0.2s;
-      border: none;
-      cursor: pointer;
-    }
-
-    .btn-primary:hover { opacity: 0.85; }
-
-    .btn-secondary {
-      font-family: var(--display);
-      font-size: 0.85rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--white);
-      background: none;
-      padding: 1rem 2rem;
-      border: 1px solid var(--border);
-      transition: all 0.2s;
-      cursor: pointer;
-    }
-
-    .btn-secondary:hover { border-color: var(--white); }
-
-    /* ── DASHBOARD PREVIEW ────────────────────────────── */
-    .hero-preview {
-      width: 100%;
-      max-width: 900px;
-      border: 1px solid var(--border);
-      background: var(--mid);
-      padding: 1.5rem;
-      text-align: left;
-    }
-
-    .preview-bar {
-      display: flex;
-      gap: 0.4rem;
-      margin-bottom: 1rem;
-    }
-
-    .preview-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--border);
-    }
-
-    .preview-dot:first-child { background: #ff5f56; }
-    .preview-dot:nth-child(2) { background: #ffbd2e; }
-    .preview-dot:nth-child(3) { background: #27c93f; }
-
-    .preview-stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      margin-bottom: 1rem;
-    }
-
-    .preview-stat {
-      background: var(--black);
-      padding: 0.75rem 1rem;
-    }
-
-    .preview-stat .num {
-      font-family: var(--display);
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: var(--accent);
-    }
-
-    .preview-stat .lbl {
-      font-size: 0.6rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--muted);
-    }
-
-    .preview-tasks {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-    }
-
-    .preview-task {
-      background: var(--black);
-      padding: 0.75rem 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 0.75rem;
-    }
-
-    .preview-check {
-      width: 14px;
-      height: 14px;
-      border: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    .preview-check.done {
-      background: var(--accent);
-      border-color: var(--accent);
-    }
-
-    .preview-title { flex: 1; }
-    .preview-title.done { text-decoration: line-through; color: var(--muted); }
-
-    .preview-tag {
-      font-size: 0.6rem;
-      text-transform: uppercase;
-      padding: 0.15rem 0.4rem;
-      border: 1px solid;
-    }
-
-    .tag-high { color: #ff4d00; border-color: #ff4d00; }
-    .tag-study { color: #b44dff; border-color: #b44dff; }
-    .tag-medium { color: #ffaa00; border-color: #ffaa00; }
-    .tag-personal { color: #ff4d9f; border-color: #ff4d9f; }
-    .tag-low { color: #00cc66; border-color: #00cc66; }
-    .tag-work { color: #4d9fff; border-color: #4d9fff; }
-
-    /* ── SECTION BASE ─────────────────────────────────── */
-    section { padding: 6rem 2rem; }
-
-    .section-inner {
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .section-label {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.2em;
-      color: var(--accent);
-      margin-bottom: 1rem;
-    }
-
-    .section-title {
-      font-family: var(--display);
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 800;
-      line-height: 1.1;
-      margin-bottom: 1rem;
-    }
-
-    .section-sub {
-      color: var(--muted);
-      font-size: 0.85rem;
-      max-width: 520px;
-      line-height: 1.8;
-      margin-bottom: 3rem;
-    }
-
-    /* ── WHY CHOOSE ───────────────────────────────────── */
-    .why-section {
-      background: var(--mid);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .why-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-    }
-
-    .why-card {
-      background: var(--black);
-      padding: 2rem;
-    }
-
-    .why-icon {
-      font-size: 1.5rem;
-      color: var(--accent);
-      margin-bottom: 1rem;
-    }
-
-    .why-title {
-      font-family: var(--display);
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .why-desc {
-      font-size: 0.78rem;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
-    /* ── FEATURES ─────────────────────────────────────── */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-    }
-
-    .feature-card {
-      background: var(--mid);
-      padding: 2rem;
-      transition: background 0.2s;
-    }
-
-    .feature-card:hover { background: #222; }
-
-    .feature-icon {
-      font-size: 1.25rem;
-      color: var(--accent);
-      margin-bottom: 1rem;
-    }
-
-    .feature-title {
-      font-family: var(--display);
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .feature-desc {
-      font-size: 0.75rem;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
-    /* ── HOW IT WORKS ─────────────────────────────────── */
-    .how-section {
-      background: var(--mid);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
-    }
-
-    .step {
-      text-align: center;
-      padding: 2rem 1rem;
-      position: relative;
-    }
-
-    .step-number {
-      font-family: var(--display);
-      font-size: 4rem;
-      font-weight: 800;
-      color: var(--border);
-      line-height: 1;
-      margin-bottom: 1rem;
-    }
-
-    .step-title {
-      font-family: var(--display);
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      color: var(--white);
-    }
-
-    .step-desc {
-      font-size: 0.75rem;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
-    /* ── STATS ────────────────────────────────────────── */
-    .stats-section {
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-    }
-
-    .stat-box {
-      background: var(--black);
-      padding: 3rem 2rem;
-      text-align: center;
-    }
-
-    .stat-num {
-      font-family: var(--display);
-      font-size: 3.5rem;
-      font-weight: 800;
-      color: var(--accent);
-      line-height: 1;
-      margin-bottom: 0.5rem;
-    }
-
-    .stat-label {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--muted);
-    }
-
-    /* ── FAQ ──────────────────────────────────────────── */
-    .faq-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-    }
-
-    .faq-item {
-      background: var(--mid);
-    }
-
-    .faq-question {
-      width: 100%;
-      background: none;
-      border: none;
-      color: var(--white);
-      font-family: var(--mono);
-      font-size: 0.85rem;
-      text-align: left;
-      padding: 1.25rem 1.5rem;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      transition: color 0.2s;
-    }
-
-    .faq-question:hover { color: var(--accent); }
-
-    .faq-question i {
-      font-size: 0.75rem;
-      color: var(--muted);
-      transition: transform 0.2s;
-      flex-shrink: 0;
-    }
-
-    .faq-question.open i { transform: rotate(180deg); color: var(--accent); }
-
-    .faq-answer {
-      display: none;
-      padding: 0 1.5rem 1.25rem;
-      font-size: 0.78rem;
-      color: var(--muted);
-      line-height: 1.8;
-      border-top: 1px solid var(--border);
-      padding-top: 1rem;
-    }
-
-    .faq-answer.open { display: block; }
-
-    /* ── CTA SECTION ──────────────────────────────────── */
-    .cta-section {
-      text-align: center;
-      background: var(--mid);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .cta-section .section-title {
-      max-width: 600px;
-      margin: 0 auto 1rem;
-    }
-
-    .cta-section .section-sub {
-      margin: 0 auto 2.5rem;
-    }
-
-    /* ── FOOTER ───────────────────────────────────────── */
-    footer {
-      background: var(--black);
-      border-top: 1px solid var(--border);
-      padding: 4rem 2.5rem 2rem;
-    }
-
-    .footer-top {
-      max-width: 1000px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1.5fr 1fr 1fr 1fr;
-      gap: 3rem;
-      padding-bottom: 3rem;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 2rem;
-    }
-
-    .footer-brand .footer-logo {
-      font-family: var(--display);
-      font-size: 1.2rem;
-      font-weight: 800;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      display: block;
-      margin-bottom: 0.75rem;
-    }
-
-    .footer-brand p {
-      font-size: 0.75rem;
-      color: var(--muted);
-      line-height: 1.7;
-      max-width: 220px;
-    }
-
-    .footer-col h4 {
-      font-family: var(--display);
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--white);
-      margin-bottom: 1rem;
-    }
-
-    .footer-col ul {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-    }
-
-    .footer-col ul li a {
-      font-size: 0.75rem;
-      color: var(--muted);
-      transition: color 0.2s;
-    }
-
-    .footer-col ul li a:hover { color: var(--accent); }
-
-    .footer-bottom {
-      max-width: 1000px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .footer-copy {
-      font-size: 0.72rem;
-      color: var(--muted);
-    }
-
-    .footer-copy a {
-      color: var(--accent);
-      transition: opacity 0.2s;
-    }
-
-    .footer-copy a:hover { opacity: 0.75; }
-
-    .footer-tech {
-      font-size: 0.68rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    /* ── RESPONSIVE ───────────────────────────────────── */
-    @media (max-width: 768px) {
-      nav { padding: 1rem; }
-
-      .nav-links { gap: 0.5rem; }
-      .nav-login { display: none; }
-
-      .why-grid,
-      .features-grid,
-      .steps,
-      .stats-grid { grid-template-columns: 1fr; }
-
-      .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
-
-      .hero-preview { display: none; }
-
-      .preview-stats { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    @media (max-width: 480px) {
-      .footer-top { grid-template-columns: 1fr; }
-      .footer-bottom { flex-direction: column; align-items: flex-start; }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- NAVBAR -->
-  <nav>
-    <span class="nav-logo">TaskSU</span>
-    <div class="nav-links">
-      <a href="#features" class="nav-login">Features</a>
-      <a href="#faq" class="nav-login">FAQ</a>
-      <a href="index.html" class="nav-login">Login</a>
-      <a href="index.html#register" class="nav-cta">Get Started</a>
-    </div>
-  </nav>
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-badge">Free forever · No installation needed</div>
-    <h1>Manage tasks.<span>Stay sharp.</span></h1>
-    <p class="hero-sub">
-      A no-nonsense task manager built for people who want to get things done.
-      Priorities, due dates, categories, and smart filters — all in one clean interface.
-    </p>
-    <div class="hero-buttons">
-      <a href="index.html" class="btn-primary">Get Started Free</a>
-      <a href="#features" class="btn-secondary">See Features</a>
-    </div>
-
-    <!-- Dashboard Preview -->
-    <div class="hero-preview">
-      <div class="preview-bar">
-        <div class="preview-dot"></div>
-        <div class="preview-dot"></div>
-        <div class="preview-dot"></div>
-      </div>
-      <div class="preview-stats">
-        <div class="preview-stat">
-          <div class="num">8</div>
-          <div class="lbl">Total</div>
-        </div>
-        <div class="preview-stat">
-          <div class="num">5</div>
-          <div class="lbl">Pending</div>
-        </div>
-        <div class="preview-stat">
-          <div class="num">3</div>
-          <div class="lbl">Completed</div>
-        </div>
-        <div class="preview-stat">
-          <div class="num">2</div>
-          <div class="lbl">Overdue</div>
-        </div>
-      </div>
-      <div class="preview-tasks">
-        <div class="preview-task">
-          <div class="preview-check done"></div>
-          <span class="preview-title done">Setup Node.js Backend</span>
-          <span class="preview-tag tag-high">High</span>
-          <span class="preview-tag tag-work">Work</span>
-        </div>
-        <div class="preview-task">
-          <div class="preview-check"></div>
-          <span class="preview-title">Study JavaScript Closures</span>
-          <span class="preview-tag tag-medium">Medium</span>
-          <span class="preview-tag tag-study">Study</span>
-        </div>
-        <div class="preview-task">
-          <div class="preview-check"></div>
-          <span class="preview-title">Submit Networking Assignment</span>
-          <span class="preview-tag tag-high">High</span>
-          <span class="preview-tag tag-personal">Personal</span>
-        </div>
-        <div class="preview-task">
-          <div class="preview-check"></div>
-          <span class="preview-title">Update Resume</span>
-          <span class="preview-tag tag-low">Low</span>
-          <span class="preview-tag tag-work">Work</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- WHY TASKSU -->
-  <section class="why-section">
-    <div class="section-inner">
-      <div class="section-label">Why TaskSU</div>
-      <h2 class="section-title">Built different.<br>Works better.</h2>
-      <p class="section-sub">
-        Most task managers are either too simple or too complex.
-        TaskSU gives you exactly what you need — nothing more, nothing less.
-      </p>
-      <div class="why-grid">
-        <div class="why-card">
-          <div class="why-icon"><i class="fa-solid fa-bolt"></i></div>
-          <div class="why-title">Fast and lightweight</div>
-          <p class="why-desc">No bloat. No loading spinners. Tasks appear instantly and updates happen in real time without page reloads.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon"><i class="fa-solid fa-lock"></i></div>
-          <div class="why-title">Private and secure</div>
-          <p class="why-desc">Your tasks belong to you. Passwords are hashed with bcrypt. Sessions are secured. Your data is never shared.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon"><i class="fa-solid fa-heart"></i></div>
-          <div class="why-title">Free forever</div>
-          <p class="why-desc">TaskSU is completely free. No hidden fees, no premium tiers, no credit card required. Create an account and start immediately.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FEATURES -->
-  <section id="features">
-    <div class="section-inner">
-      <div class="section-label">Features</div>
-      <h2 class="section-title">Everything you need.<br>Nothing you don't.</h2>
-      <p class="section-sub">
-        TaskSU packs powerful organization features into a clean, distraction-free interface.
-      </p>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-list-check"></i></div>
-          <div class="feature-title">Smart Task Management</div>
-          <p class="feature-desc">Create, edit, complete, and delete tasks with ease. Inline editing means you never lose your flow.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-fire"></i></div>
-          <div class="feature-title">Priority Levels</div>
-          <p class="feature-desc">Mark tasks as Low, Medium, or High priority. Color-coded tags make it instantly clear what needs attention first.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-calendar-xmark"></i></div>
-          <div class="feature-title">Due Dates & Overdue Tracking</div>
-          <p class="feature-desc">Set due dates on any task. TaskSU automatically flags overdue tasks in red and counts them in your stats bar.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-tags"></i></div>
-          <div class="feature-title">Task Categories</div>
-          <p class="feature-desc">Organize tasks into Work, Study, Personal, Health, Finance, or Other. Each category has its own distinct color tag.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
-          <div class="feature-title">Real-Time Search</div>
-          <p class="feature-desc">Find any task instantly. The search bar filters your task list as you type — no waiting, no page reload.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-moon"></i></div>
-          <div class="feature-title">Dark & Light Theme</div>
-          <p class="feature-desc">Switch between Dark, Light, and System themes. Your preference is saved and applied across all pages automatically.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-filter"></i></div>
-          <div class="feature-title">Smart Filters</div>
-          <p class="feature-desc">Filter tasks by All, Pending, Completed, High Priority, Overdue, or by Category. The overdue filter badge shows the count at a glance.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-chart-simple"></i></div>
-          <div class="feature-title">Live Stats Dashboard</div>
-          <p class="feature-desc">A live stats bar always shows your Total, Pending, Completed, and Overdue task counts — updating instantly as you work.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-mobile-screen"></i></div>
-          <div class="feature-title">Fully Responsive</div>
-          <p class="feature-desc">TaskSU works beautifully on desktop, tablet, and mobile. Manage your tasks from any device, anywhere.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- HOW IT WORKS -->
-  <section class="how-section" id="how">
-    <div class="section-inner">
-      <div class="section-label">How it works</div>
-      <h2 class="section-title">Up and running<br>in 60 seconds.</h2>
-      <p class="section-sub">No tutorials needed. TaskSU is designed to be obvious from the first click.</p>
-      <div class="steps">
-        <div class="step">
-          <div class="step-number">01</div>
-          <div class="step-title">Create your account</div>
-          <p class="step-desc">Sign up with a username, email, and password. No credit card, no email verification — just instant access.</p>
-        </div>
-        <div class="step">
-          <div class="step-number">02</div>
-          <div class="step-title">Add your tasks</div>
-          <p class="step-desc">Type a task, pick a priority, set a due date, choose a category. Hit Add Task. It's that simple.</p>
-        </div>
-        <div class="step">
-          <div class="step-number">03</div>
-          <div class="step-title">Stay organized</div>
-          <p class="step-desc">Use filters, search, and stats to stay on top of what matters. Check off tasks as you complete them.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- STATS -->
-  <section class="stats-section">
-    <div class="section-inner">
-      <div class="stats-grid">
-        <div class="stat-box">
-          <div class="stat-num">100%</div>
-          <div class="stat-label">Free Forever</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-num">6</div>
-          <div class="stat-label">Task Categories</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-num">∞</div>
-          <div class="stat-label">Tasks Supported</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FAQ -->
-  <section id="faq">
-    <div class="section-inner">
-      <div class="section-label">FAQ</div>
-      <h2 class="section-title">Questions?<br>We have answers.</h2>
-      <p class="section-sub">Everything you need to know about TaskSU.</p>
-
-      <div class="faq-list">
-
-        <div class="faq-item">
-          <button class="faq-question">
-            Is TaskSU really free?
-            <i class="fa-solid fa-chevron-down"></i>
-          </button>
-          <div class="faq-answer">
-            Yes — completely free. There are no premium plans, no hidden fees, and no credit card required. Create an account and use every feature immediately.
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-question">
-            Do I need to install anything?
-            <i class="fa-solid fa-chevron-down"></i>
-          </button>
-          <div class="faq-answer">
-            No installation required. TaskSU runs entirely in your browser. Open the link, create an account, and start managing your tasks in seconds.
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-question">
-            Is my data safe and private?
-            <i class="fa-solid fa-chevron-down"></i>
-          </button>
-          <div class="faq-answer">
-            Your data belongs to you. Passwords are hashed using bcrypt — they are never stored in plain text. Your tasks are private to your account and never shared with anyone.
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-question">
-            Can I use TaskSU on my phone?
-            <i class="fa-solid fa-chevron-down"></i>
-          </button>
-          <div class="faq-answer">
-            Yes. TaskSU is fully responsive and works on any device — desktop, tablet, or mobile. Open it in your phone browser and it adapts to your screen size automatically.
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-question">
-            Can I change my username or password?
-            <i class="fa-solid fa-chevron-down"></i>
-          </button>
-          <div class="faq-answer">
-            Yes. Visit your Profile page from the dashboard header. You can update your username, change your password, or delete your account entirely at any time.
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-question">
-            What happens if I delete my account?
-            <i class="fa-solid fa-chevron-down"></i>
-          </button>
-          <div class="faq-answer">
-            Deleting your account permanently removes your profile and all your tasks. This action cannot be undone. You will be asked to confirm with your password before anything is deleted.
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-question">
-            How do I report a bug or suggest a feature?
-            <i class="fa-solid fa-chevron-down"></i>
-          </button>
-          <div class="faq-answer">
-            TaskSU is an open source project. You can open an issue or submit a pull request on the GitHub repository. Feedback is always welcome.
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="cta-section">
-    <div class="section-inner" style="text-align:center;">
-      <div class="section-label">Get started today</div>
-      <h2 class="section-title">Ready to get<br>things done?</h2>
-      <p class="section-sub" style="margin: 0 auto 2.5rem;">
-        Join TaskSU for free. No credit card. No email verification. Just create an account and start organizing your life.
-      </p>
-      <a href="index.html" class="btn-primary">Create Free Account</a>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-top">
-      <div class="footer-brand">
-        <span class="footer-logo">TaskSU</span>
-        <p>A no-nonsense task manager built for people who want to get things done without the bloat. Free forever.</p>
-      </div>
-
-      <div class="footer-col">
-        <h4>Product</h4>
-        <ul>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#how">How it works</a></li>
-          <li><a href="#faq">FAQ</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col">
-        <h4>Account</h4>
-        <ul>
-          <li><a href="index.html">Login</a></li>
-          <li><a href="index.html">Register</a></li>
-          <li><a href="dashboard.html">Dashboard</a></li>
-          <li><a href="profile.html">Profile</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col">
-        <h4>Built with</h4>
-        <ul>
-          <li><a href="https://nodejs.org" target="_blank">Node.js</a></li>
-          <li><a href="https://expressjs.com" target="_blank">Express</a></li>
-          <li><a href="https://www.sqlite.org" target="_blank">SQLite</a></li>
-          <li><a href="https://railway.app" target="_blank">Railway</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      <p class="footer-copy">
-        © 2026 TaskSU. Built by
-        <a href="https://github.com/SimeonATarr231" target="_blank">Simeon A. Tarr</a>
-        — Liberia 🇱🇷
-      </p>
-      <span class="footer-tech">Node.js + Express + SQLite + Vanilla JS</span>
-    </div>
-  </footer>
-
-  <script>
-    // ── FAQ ACCORDION ───────────────────────────────────
-    document.querySelectorAll('.faq-question').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const answer = btn.nextElementSibling;
-        const isOpen = answer.classList.contains('open');
-
-        // Close all
-        document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
-        document.querySelectorAll('.faq-question').forEach(b => b.classList.remove('open'));
-
-        // Open clicked if it was closed
-        if (!isOpen) {
-          answer.classList.add('open');
-          btn.classList.add('open');
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TaskSU | Manage Tasks. Stay Sharp.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --black: #0a0a0a;
+        --white: #f5f0e8;
+        --accent: #ff4d00;
+        --mid: #1a1a1a;
+        --border: #2a2a2a;
+        --muted: #666;
+        --mono: "Space Mono", monospace;
+        --display: "Syne", sans-serif;
+      }
+
+      [data-theme="light"] {
+        --black: #f5f0e8;
+        --white: #0a0a0a;
+        --mid: #e8e3db;
+        --border: #d0cbc3;
+        --muted: #888;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background: var(--black);
+        color: var(--white);
+        font-family: var(--mono);
+        line-height: 1.6;
+        transition:
+          background 0.3s,
+          color 0.3s;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      /* FADE IN ANIMATION */
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
         }
-      });
-    });
-  </script>
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-</body>
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition:
+          opacity 0.6s ease,
+          transform 0.6s ease;
+      }
+
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* NAVBAR */
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgba(10, 10, 10, 0.95);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        padding: 0.85rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        transition: background 0.3s;
+      }
+
+      [data-theme="light"] nav {
+        background: rgba(245, 240, 232, 0.95);
+      }
+
+      .nav-logo {
+        font-family: var(--display);
+        font-size: 1.1rem;
+        font-weight: 800;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+
+      .nav-center {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        flex-shrink: 0;
+      }
+
+      .nav-link {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--muted);
+        transition: color 0.2s;
+        white-space: nowrap;
+      }
+
+      .nav-link:hover {
+        color: var(--accent);
+      }
+
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      /* Theme Toggle */
+      .theme-switcher {
+        display: flex;
+        border: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+
+      .theme-opt {
+        background: none;
+        border: none;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 0.62rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 0.3rem 0.55rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        border-right: 1px solid var(--border);
+        white-space: nowrap;
+      }
+
+      .theme-opt:last-child {
+        border-right: none;
+      }
+      .theme-opt:hover {
+        color: var(--white);
+      }
+      .theme-opt.active {
+        background: var(--accent);
+        color: var(--black);
+      }
+
+      .nav-login {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+        padding: 0.45rem 1rem;
+        border: 1px solid var(--border);
+        transition: all 0.2s;
+      }
+
+      .nav-login:hover {
+        color: var(--white);
+        border-color: var(--white);
+      }
+
+      .nav-cta {
+        font-family: var(--display);
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--black);
+        background: var(--accent);
+        padding: 0.45rem 1.1rem;
+        transition: opacity 0.2s;
+      }
+
+      .nav-cta:hover {
+        opacity: 0.85;
+      }
+
+      /* HAMBURGER */
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 4px;
+      }
+
+      .hamburger span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: var(--white);
+        transition: all 0.3s;
+        transform-origin: center;
+      }
+
+      .hamburger.open span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+      }
+
+      .hamburger.open span:nth-child(2) {
+        opacity: 0;
+        transform: scaleX(0);
+      }
+
+      .hamburger.open span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+      }
+
+      /* Mobile Menu */
+      .mobile-menu {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--black);
+        z-index: 999;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .mobile-menu.open {
+        display: flex;
+        opacity: 1;
+      }
+
+      .mobile-menu a {
+        font-family: var(--display);
+        font-size: 1.5rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--white);
+        transition: color 0.2s;
+      }
+
+      .mobile-menu a:hover {
+        color: var(--accent);
+      }
+
+      .mobile-menu .mobile-cta {
+        background: var(--accent);
+        color: black;
+        padding: 0.75rem 0.85rem;
+        font-size: 0.85rem;
+      }
+
+      .mobile-menu .mobile-cta:hover{
+        color: #fff;
+      }
+
+      .mobile-theme {
+        display: flex;
+        gap: 0;
+        border: 1px solid var(--border);
+        margin-top: 1rem;
+      }
+
+      .mobile-theme button {
+        background: none;
+        border: none;
+        border-right: 1px solid var(--border);
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .mobile-theme button:last-child {
+        border-right: none;
+      }
+      .mobile-theme button.active {
+        background: var(--accent);
+        color: var(--black);
+      }
+
+      /* HERO */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 6rem 2rem 4rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: -200px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 900px;
+        height: 900px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 77, 0, 0.07) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+        animation: fadeIn 2s ease forwards;
+      }
+
+      .hero-badge {
+        display: inline-block;
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--accent);
+        border: 1px solid var(--accent);
+        padding: 0.35rem 1rem;
+        margin-bottom: 2rem;
+        animation: fadeUp 0.6s ease forwards;
+      }
+
+      .hero h1 {
+        font-family: var(--display);
+        font-size: clamp(3rem, 8vw, 6.5rem);
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 1.5rem;
+        max-width: 900px;
+        animation: fadeUp 0.6s 0.1s ease both;
+      }
+
+      .hero h1 span {
+        color: var(--accent);
+        display: block;
+      }
+
+      .hero-sub {
+        font-size: 0.88rem;
+        color: var(--muted);
+        max-width: 520px;
+        line-height: 1.8;
+        margin-bottom: 2.5rem;
+        animation: fadeUp 0.6s 0.2s ease both;
+      }
+
+      .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 4rem;
+        animation: fadeUp 0.6s 0.3s ease both;
+      }
+
+      .btn-primary {
+        font-family: var(--display);
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--black);
+        background: var(--accent);
+        padding: 1rem 2rem;
+        transition:
+          opacity 0.2s,
+          transform 0.1s;
+        border: none;
+        cursor: pointer;
+        white-space: nowrap;
+        display: inline-block;
+        text-align: center;
+      }
+
+      .btn-primary:hover {
+        opacity: 0.85;
+      }
+      .btn-primary:active {
+        transform: scale(0.98);
+      }
+
+      .btn-secondary {
+        font-family: var(--display);
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--white);
+        background: none;
+        padding: 1rem 2rem;
+        border: 1px solid var(--border);
+        transition: all 0.2s;
+        cursor: pointer;
+      }
+
+      .btn-secondary:hover {
+        border-color: var(--white);
+      }
+
+      /* HERO IMAGE */
+      .hero-image-wrap {
+        width: 100%;
+        max-width: 1000px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+        animation: fadeUp 0.8s 0.4s ease both;
+        position: relative;
+      }
+
+      .hero-image-wrap::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent),
+          transparent
+        );
+      }
+
+      .hero-image-wrap img {
+        width: 100%;
+        height: auto;
+        display: block;
+        /* Expected: public/images/hero-dashboard.png */
+        /* Size: 1200×750px */
+      }
+
+      /* SECTION BASE */
+      section {
+        padding: 6rem 2rem;
+      }
+
+      .section-inner {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .section-label {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--accent);
+        margin-bottom: 1rem;
+      }
+
+      .section-title {
+        font-family: var(--display);
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 1rem;
+      }
+
+      .section-sub {
+        color: var(--muted);
+        font-size: 0.82rem;
+        max-width: 520px;
+        line-height: 1.8;
+        margin-bottom: 3rem;
+      }
+
+      /* WHY SECTION */
+      .why-section {
+        background: var(--mid);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .why-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        background: var(--border);
+        border: 1px solid var(--border);
+      }
+
+      .why-card {
+        background: var(--black);
+        padding: 2rem;
+        transition: background 0.2s;
+      }
+
+      .why-card:hover {
+        background: #111;
+      }
+
+      .why-icon {
+        font-size: 1.5rem;
+        color: var(--accent);
+        margin-bottom: 1rem;
+      }
+
+      .why-title {
+        font-family: var(--display);
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .why-desc {
+        font-size: 0.75rem;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      /* FEATURES */
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        background: var(--border);
+        border: 1px solid var(--border);
+      }
+
+      .feature-card {
+        background: var(--mid);
+        padding: 2rem;
+        transition: background 0.2s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .feature-card::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--accent);
+        transition: width 0.3s;
+      }
+
+      .feature-card:hover::after {
+        width: 100%;
+      }
+      .feature-card:hover {
+        background: #222;
+      }
+
+      .feature-icon {
+        font-size: 1.25rem;
+        color: var(--accent);
+        margin-bottom: 1rem;
+      }
+
+      .feature-title {
+        font-family: var(--display);
+        font-size: 0.9rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .feature-desc {
+        font-size: 0.72rem;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      /* SCREENSHOT FEATURES */
+      .screenshot-section {
+        background: var(--mid);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .screenshot-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        align-items: center;
+        margin-bottom: 5rem;
+      }
+
+      .screenshot-row:last-child {
+        margin-bottom: 0;
+      }
+
+      .screenshot-row.reverse {
+        direction: rtl;
+      }
+      .screenshot-row.reverse > * {
+        direction: ltr;
+      }
+
+      .screenshot-text .section-label {
+        margin-bottom: 0.5rem;
+      }
+      .screenshot-text .section-title {
+        font-size: clamp(1.5rem, 3vw, 2rem);
+        margin-bottom: 0.75rem;
+      }
+      .screenshot-text .section-sub {
+        margin-bottom: 0;
+      }
+
+      .screenshot-img {
+        border: 1px solid var(--border);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .screenshot-img img {
+        width: 100%;
+        height: auto;
+        display: block;
+        transition: transform 0.4s ease;
+      }
+
+      .screenshot-img:hover img {
+        transform: scale(1.02);
+      }
+
+      /* HOW IT WORKS */
+      .how-section {
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        background: var(--border);
+        border: 1px solid var(--border);
+      }
+
+      .step {
+        background: var(--mid);
+        padding: 2.5rem 2rem;
+        text-align: center;
+        transition: background 0.2s;
+      }
+
+      .step:hover {
+        background: #222;
+      }
+
+      .step-number {
+        font-family: var(--display);
+        font-size: 4rem;
+        font-weight: 800;
+        color: var(--border);
+        line-height: 1;
+        margin-bottom: 1rem;
+        transition: color 0.2s;
+      }
+
+      .step:hover .step-number {
+        color: var(--accent);
+      }
+
+      .step-title {
+        font-family: var(--display);
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .step-desc {
+        font-size: 0.72rem;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      /* STATS */
+      .stats-section {
+        background: var(--mid);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        background: var(--border);
+        border: 1px solid var(--border);
+      }
+
+      .stat-box {
+        background: var(--black);
+        padding: 3rem 2rem;
+        text-align: center;
+        transition: background 0.2s;
+      }
+
+      .stat-box:hover {
+        background: #111;
+      }
+
+      .stat-num {
+        font-family: var(--display);
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: var(--accent);
+        line-height: 1;
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-label {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--muted);
+      }
+
+      /* About */
+      .about-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+      }
+
+      .about-card {
+        border: 1px solid var(--border);
+        padding: 2rem;
+        background: var(--mid);
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .about-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+
+      .about-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .about-icon i {
+        color: var(--black);
+        font-size: 0.9rem;
+      }
+
+      .about-item-title {
+        font-family: var(--display);
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+      }
+
+      .about-item-desc {
+        font-size: 0.72rem;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .about-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .about-btn-github {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: var(--display);
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--white);
+        background: none;
+        padding: 1rem 2rem;
+        border: 1px solid var(--border);
+        transition: all 0.2s;
+      }
+
+      .about-btn-github:hover {
+        border-color: var(--white);
+      }
+
+      /* FAQ */
+      .faq-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        background: var(--border);
+        border: 1px solid var(--border);
+      }
+
+      .faq-item {
+        background: var(--mid);
+      }
+
+      .faq-question {
+        width: 100%;
+        background: none;
+        border: none;
+        color: var(--white);
+        font-family: var(--mono);
+        font-size: 0.82rem;
+        text-align: left;
+        padding: 1.25rem 1.5rem;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        transition: color 0.2s;
+      }
+
+      .faq-question:hover {
+        color: var(--accent);
+      }
+
+      .faq-question i {
+        font-size: 0.72rem;
+        color: var(--muted);
+        transition:
+          transform 0.3s,
+          color 0.2s;
+        flex-shrink: 0;
+      }
+
+      .faq-question.open i {
+        transform: rotate(180deg);
+        color: var(--accent);
+      }
+
+      .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition:
+          max-height 0.4s ease,
+          padding 0.3s ease;
+        font-size: 0.78rem;
+        color: var(--muted);
+        line-height: 1.8;
+        padding: 0 1.5rem;
+        border-top: 0px solid var(--border);
+      }
+
+      .faq-answer.open {
+        max-height: 300px;
+        padding: 1rem 1.5rem 1.25rem;
+        border-top: 1px solid var(--border);
+      }
+
+      /* CTA */
+      .cta-section {
+        text-align: center;
+        background: var(--black);
+        border-top: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .cta-section::before {
+        content: "";
+        position: absolute;
+        bottom: -200px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 77, 0, 0.06) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      .cta-section .section-title {
+        max-width: 600px;
+        margin: 0 auto 1rem;
+      }
+      .cta-section .section-sub {
+        margin: 0 auto 2.5rem;
+      }
+
+      /* FOOTER */
+      footer {
+        background: var(--mid);
+        border-top: 1px solid var(--border);
+        padding: 5rem 2.5rem 2rem;
+      }
+
+      .footer-top {
+        max-width: 1000px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1.8fr 1fr 1fr 1fr;
+        gap: 3rem;
+        padding-bottom: 3rem;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 2rem;
+      }
+
+      .footer-logo {
+        font-family: var(--display);
+        font-size: 1.3rem;
+        font-weight: 800;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--accent);
+        display: block;
+        margin-bottom: 0.75rem;
+      }
+
+      .footer-brand p {
+        font-size: 0.72rem;
+        color: var(--muted);
+        line-height: 1.8;
+        max-width: 240px;
+        margin-bottom: 1.5rem;
+      }
+
+      .footer-social {
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      .footer-social a {
+        width: 34px;
+        height: 34px;
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--muted);
+        font-size: 0.8rem;
+        transition: all 0.2s;
+      }
+
+      .footer-social a:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .footer-col h4 {
+        font-family: var(--display);
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--white);
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .footer-col ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .footer-col ul li a {
+        font-size: 0.72rem;
+        color: var(--muted);
+        transition: color 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+
+      .footer-col ul li a:hover {
+        color: var(--accent);
+      }
+
+      .footer-col ul li a i {
+        font-size: 0.6rem;
+        opacity: 0;
+        transition:
+          opacity 0.2s,
+          transform 0.2s;
+        transform: translateX(-4px);
+      }
+
+      .footer-col ul li a:hover i {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      .footer-bottom {
+        max-width: 1000px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .footer-copy {
+        font-size: 0.7rem;
+        color: var(--muted);
+      }
+
+      .footer-copy a {
+        color: var(--accent);
+        transition: opacity 0.2s;
+      }
+
+      .footer-copy a:hover {
+        opacity: 0.75;
+      }
+
+      .footer-tech {
+        font-size: 0.65rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        border: 1px solid var(--border);
+        padding: 0.3rem 0.75rem;
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 900px) {
+        .nav-center {
+          display: none;
+        }
+        .nav-login {
+          display: none;
+        }
+        .theme-switcher {
+          display: none;
+        }
+        .hamburger {
+          display: flex;
+        }
+
+        .why-grid,
+        .features-grid,
+        .steps,
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .screenshot-row,
+        .screenshot-row.reverse {
+          grid-template-columns: 1fr;
+          direction: ltr;
+        }
+
+        .footer-top {
+          grid-template-columns: 1fr 1fr;
+          gap: 2rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        nav {
+          padding: 1rem;
+        }
+        section {
+          padding: 4rem 1.25rem;
+        }
+        .footer-top {
+          grid-template-columns: 1fr;
+        }
+        .footer-bottom {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .about-grid {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+
+        .about-buttons {
+          flex-direction: column;
+        }
+
+        .about-btn-github,
+        .about-buttons .btn-primary {
+          text-align: center;
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 1024px) {
+        .nav-center {
+          display: none;
+        }
+        .nav-right {
+          display: none;
+        }
+        .hamburger {
+          display: flex;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <nav>
+      <span class="nav-logo">TaskSU</span>
+
+      <div class="nav-center">
+        <a href="#why" class="nav-link">Why TaskSU</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#how" class="nav-link">How it works</a>
+        <a href="#faq" class="nav-link">FAQ</a>
+        <a href="#about" class="nav-link">About</a>
+      </div>
+
+      <div class="nav-right">
+        <div class="theme-switcher">
+          <button class="theme-opt active" data-theme="dark">Dark</button>
+          <button class="theme-opt" data-theme="light">Light</button>
+          <button class="theme-opt" data-theme="system">System</button>
+        </div>
+        <a href="login.html" class="nav-login">Login</a>
+        <a href="login.html" class="nav-cta">Get Started</a>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </nav>
+
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu" id="mobile-menu">
+      <div class="mobile-theme">
+        <button class="active" data-theme="dark">Dark</button>
+        <button data-theme="light">Light</button>
+        <button data-theme="system">System</button>
+      </div>
+      <a href="#why" class="mobile-nav-link">Why TaskSU</a>
+      <a href="#features" class="mobile-nav-link">Features</a>
+      <a href="#how" class="mobile-nav-link">How it works</a>
+      <a href="#faq" class="mobile-nav-link">FAQ</a>
+      <a href="#about" class="mobile-nav-link">About</a>
+      <a href="login.html" class="mobile-nav-link">Login</a>
+      <a href="login.html" class="mobile-cta">Get Started →</a>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-badge">Free forever · No installation needed</div>
+      <h1>Manage tasks.<span>Stay sharp.</span></h1>
+      <p class="hero-sub">
+        A no-nonsense task manager built for people who want to get things done.
+        Priorities, due dates, categories, and smart filters — all in one clean
+        interface.
+      </p>
+      <div class="hero-buttons">
+        <a href="login.html" class="btn-primary">Get Started Free</a>
+        <a href="#features" class="btn-secondary">See Features</a>
+      </div>
+
+      <!-- Dashboard Screenshot -->
+      <div class="hero-image-wrap reveal">
+        <img
+          src="images/hero-dashboard.png"
+          alt="TaskSU Dashboard showing task list with priorities and categories"
+          width="1200"
+          height="750"
+          loading="eager"
+        />
+      </div>
+    </section>
+
+    <!-- WHY TASKSU -->
+    <section class="why-section" id="why">
+      <div class="section-inner">
+        <div class="section-label reveal">Why TaskSU</div>
+        <h2 class="section-title reveal">
+          Built different.<br />Works better.
+        </h2>
+        <p class="section-sub reveal">
+          Most task managers are either too simple or too complex. TaskSU gives
+          you exactly what you need — nothing more, nothing less.
+        </p>
+        <div class="why-grid">
+          <div class="why-card reveal">
+            <div class="why-icon"><i class="fa-solid fa-bolt"></i></div>
+            <div class="why-title">Fast and lightweight</div>
+            <p class="why-desc">
+              No bloat. No loading spinners. Tasks appear instantly and updates
+              happen in real time without page reloads.
+            </p>
+          </div>
+          <div class="why-card reveal">
+            <div class="why-icon"><i class="fa-solid fa-lock"></i></div>
+            <div class="why-title">Private and secure</div>
+            <p class="why-desc">
+              Your tasks belong to you. Passwords are hashed with bcrypt.
+              Sessions are secured. Your data is never shared.
+            </p>
+          </div>
+          <div class="why-card reveal">
+            <div class="why-icon"><i class="fa-solid fa-heart"></i></div>
+            <div class="why-title">Free forever</div>
+            <p class="why-desc">
+              TaskSU is completely free. No hidden fees, no premium tiers, no
+              credit card required. Create an account and start immediately.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features">
+      <div class="section-inner">
+        <div class="section-label reveal">Features</div>
+        <h2 class="section-title reveal">
+          Everything you need.<br />Nothing you don't.
+        </h2>
+        <p class="section-sub reveal">
+          TaskSU packs powerful organization features into a clean,
+          distraction-free interface.
+        </p>
+        <div class="features-grid">
+          <div class="feature-card reveal">
+            <div class="feature-icon">
+              <i class="fa-solid fa-list-check"></i>
+            </div>
+            <div class="feature-title">Smart Task Management</div>
+            <p class="feature-desc">
+              Create, edit, complete, and delete tasks with ease. Inline editing
+              means you never lose your flow.
+            </p>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon"><i class="fa-solid fa-fire"></i></div>
+            <div class="feature-title">Priority Levels</div>
+            <p class="feature-desc">
+              Mark tasks as Low, Medium, or High priority. Color-coded tags make
+              it instantly clear what needs attention.
+            </p>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon">
+              <i class="fa-solid fa-calendar-xmark"></i>
+            </div>
+            <div class="feature-title">Due Dates & Overdue Tracking</div>
+            <p class="feature-desc">
+              Set due dates on any task. TaskSU automatically flags overdue
+              tasks in red and counts them in your stats.
+            </p>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon"><i class="fa-solid fa-tags"></i></div>
+            <div class="feature-title">Task Categories</div>
+            <p class="feature-desc">
+              Organize into Work, Study, Personal, Health, Finance, or Other.
+              Each category has its own color tag.
+            </p>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <div class="feature-title">Real-Time Search</div>
+            <p class="feature-desc">
+              Find any task instantly. The search bar filters your list as you
+              type — no waiting, no page reload.
+            </p>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon"><i class="fa-solid fa-moon"></i></div>
+            <div class="feature-title">Dark, Light & System Theme</div>
+            <p class="feature-desc">
+              Switch between Dark, Light, and System themes. Your preference is
+              saved and applied across all pages.
+            </p>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon"><i class="fa-solid fa-filter"></i></div>
+            <div class="feature-title">Smart Filters</div>
+            <p class="feature-desc">
+              Filter by All, Pending, Completed, High Priority, Overdue, or
+              Category. The overdue badge shows the count.
+            </p>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon">
+              <i class="fa-solid fa-chart-simple"></i>
+            </div>
+            <div class="feature-title">Live Stats Dashboard</div>
+            <p class="feature-desc">
+              A live stats bar always shows Total, Pending, Completed, and
+              Overdue counts — updating instantly as you work.
+            </p>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon">
+              <i class="fa-solid fa-user-gear"></i>
+            </div>
+            <div class="feature-title">Profile Management</div>
+            <p class="feature-desc">
+              Update your username, change your password, or delete your account
+              from the profile page at any time.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREENSHOT FEATURES -->
+    <section class="screenshot-section">
+      <div class="section-inner">
+        <!-- Row 1 -->
+        <div class="screenshot-row reveal">
+          <div class="screenshot-text">
+            <div class="section-label">Task Management</div>
+            <h3 class="section-title">Your tasks.<br />Your way.</h3>
+            <p class="section-sub">
+              See all your tasks at a glance. Color-coded priorities and
+              category tags make it instantly clear what's urgent, what's in
+              progress, and what's done. Overdue tasks are flagged automatically
+              in red.
+            </p>
+          </div>
+          <div class="screenshot-img">
+            <img
+              src="images/feature-tasks.png"
+              alt="TaskSU task list with color coded tags"
+              width="800"
+              height="400"
+              loading="lazy"
+            />
+          </div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="screenshot-row reverse reveal">
+          <div class="screenshot-text">
+            <div class="section-label">Smart Filters</div>
+            <h3 class="section-title">Find what<br />matters fast.</h3>
+            <p class="section-sub">
+              Filter tasks by status, priority, category, or overdue state.
+              Search in real time. The overdue badge on the filter button tells
+              you exactly how many tasks need urgent attention.
+            </p>
+          </div>
+          <div class="screenshot-img">
+            <img
+              src="images/feature-filters.png"
+              alt="TaskSU filter buttons with overdue badge"
+              width="800"
+              height="100"
+              loading="lazy"
+            />
+          </div>
+        </div>
+
+        <!-- Row 3 -->
+        <div class="screenshot-row reveal">
+          <div class="screenshot-text">
+            <div class="section-label">Profile</div>
+            <h3 class="section-title">Your account.<br />Fully in control.</h3>
+            <p class="section-sub">
+              Change your username, update your password, or delete your account
+              entirely from the profile page. Everything in one place, always
+              secure.
+            </p>
+          </div>
+          <div class="screenshot-img">
+            <img
+              src="images/profile-page.png"
+              alt="TaskSU profile page"
+              width="1200"
+              height="750"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="how-section" id="how">
+      <div class="section-inner">
+        <div class="section-label reveal">How it works</div>
+        <h2 class="section-title reveal">Up and running<br />in 60 seconds.</h2>
+        <p class="section-sub reveal">
+          No tutorials needed. TaskSU is designed to be obvious from the first
+          click.
+        </p>
+        <div class="steps">
+          <div class="step reveal">
+            <div class="step-number">01</div>
+            <div class="step-title">Create your account</div>
+            <p class="step-desc">
+              Sign up with a username, email, and password. No credit card, no
+              complicated setup — just instant access.
+            </p>
+          </div>
+          <div class="step reveal">
+            <div class="step-number">02</div>
+            <div class="step-title">Add your tasks</div>
+            <p class="step-desc">
+              Type a task, pick a priority, set a due date, choose a category.
+              Hit Add Task. It takes seconds.
+            </p>
+          </div>
+          <div class="step reveal">
+            <div class="step-number">03</div>
+            <div class="step-title">Stay organized</div>
+            <p class="step-desc">
+              Use filters, search, and stats to stay on top of what matters.
+              Check off tasks as you complete them.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats-section">
+      <div class="section-inner">
+        <div class="stats-grid">
+          <div class="stat-box reveal">
+            <div class="stat-num">100%</div>
+            <div class="stat-label">Free Forever</div>
+          </div>
+          <div class="stat-box reveal">
+            <div class="stat-num">6</div>
+            <div class="stat-label">Task Categories</div>
+          </div>
+          <div class="stat-box reveal">
+            <div class="stat-num">∞</div>
+            <div class="stat-label">Tasks Supported</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="section-inner">
+        <div class="about-grid">
+          <div>
+            <div class="section-label reveal">About</div>
+            <h2 class="section-title reveal">
+              Built by a developer.<br />For everyone.
+            </h2>
+            <p class="section-sub reveal">
+              TaskSU was built by
+              <strong style="color: var(--white)">Simeon A. Tarr</strong>, a
+              self-taught fullstack developer from
+              <strong style="color: var(--white)">Liberia 🇱🇷</strong>.
+            </p>
+            <p class="section-sub reveal">
+              It started as a learning project — a way to master Node.js,
+              Express, SQLite, and vanilla JavaScript by building something
+              real. It grew into a fully deployed, production-ready web
+              application.
+            </p>
+            <p class="section-sub reveal">
+              The goal was simple: build a task manager that is fast, clean, and
+              genuinely useful — without the bloat of enterprise tools. TaskSU
+              is the result.
+            </p>
+            <div class="about-buttons reveal">
+              <a
+                href="https://github.com/SimeonATarr231/tasksu"
+                target="_blank"
+                class="about-btn-github"
+              >
+                <i class="fa-brands fa-github"></i> View on GitHub
+              </a>
+              <a href="login.html" class="btn-primary">Try it free</a>
+            </div>
+          </div>
+
+          <div class="about-card reveal">
+            <div class="about-item">
+              <div class="about-icon">
+                <i class="fa-solid fa-code"></i>
+              </div>
+              <div>
+                <div class="about-item-title">Self-taught developer</div>
+                <p class="about-item-desc">
+                  Built entirely through independent study, real projects, and
+                  mentorship. No formal computer science degree.
+                </p>
+              </div>
+            </div>
+
+            <div class="about-item">
+              <div class="about-icon">
+                <i class="fa-solid fa-globe-africa"></i>
+              </div>
+              <div>
+                <div class="about-item-title">Built in Liberia</div>
+                <p class="about-item-desc">
+                  Designed and developed in Monrovia, Liberia. Proof that
+                  world-class software can come from anywhere.
+                </p>
+              </div>
+            </div>
+
+            <div class="about-item">
+              <div class="about-icon">
+                <i class="fa-solid fa-layer-group"></i>
+              </div>
+              <div>
+                <div class="about-item-title">Fullstack from scratch</div>
+                <p class="about-item-desc">
+                  Every line — frontend, backend, database, deployment — written
+                  and understood by hand. No templates. No shortcuts.
+                </p>
+              </div>
+            </div>
+
+            <div class="about-item">
+              <div class="about-icon">
+                <i class="fa-brands fa-github"></i>
+              </div>
+              <div>
+                <div class="about-item-title">Open source</div>
+                <p class="about-item-desc">
+                  The full source code is publicly available on GitHub. Read it,
+                  learn from it, or contribute to it.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <div class="section-inner">
+        <div class="section-label reveal">FAQ</div>
+        <h2 class="section-title reveal">Questions?<br />We have answers.</h2>
+        <p class="section-sub reveal">
+          Everything you need to know about TaskSU.
+        </p>
+
+        <div class="faq-list">
+          <div class="faq-item reveal">
+            <button class="faq-question">
+              Is TaskSU really free?
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="faq-answer">
+              Yes — completely free. There are no premium plans, no hidden fees,
+              and no credit card required. Create an account and use every
+              feature immediately.
+            </div>
+          </div>
+
+          <div class="faq-item reveal">
+            <button class="faq-question">
+              Do I need to install anything?
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="faq-answer">
+              No installation required. TaskSU runs entirely in your browser.
+              Open the link, create an account, and start managing your tasks in
+              seconds.
+            </div>
+          </div>
+
+          <div class="faq-item reveal">
+            <button class="faq-question">
+              Is my data safe and private?
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="faq-answer">
+              Your data belongs to you. Passwords are hashed using bcrypt — they
+              are never stored in plain text. Your tasks are private to your
+              account and never shared with anyone.
+            </div>
+          </div>
+
+          <div class="faq-item reveal">
+            <button class="faq-question">
+              Can I use TaskSU on my phone?
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="faq-answer">
+              Yes. TaskSU is fully responsive and works on any device — desktop,
+              tablet, or mobile. Open it in your phone browser and it adapts to
+              your screen automatically.
+            </div>
+          </div>
+
+          <div class="faq-item reveal">
+            <button class="faq-question">
+              Can I change my username or password?
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="faq-answer">
+              Yes. Visit your Profile page from the dashboard header. You can
+              update your username, change your password, or delete your account
+              entirely at any time.
+            </div>
+          </div>
+
+          <div class="faq-item reveal">
+            <button class="faq-question">
+              What happens if I delete my account?
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="faq-answer">
+              Deleting your account permanently removes your profile and all
+              your tasks. This action cannot be undone. You will be asked to
+              confirm with your password before anything is deleted.
+            </div>
+          </div>
+
+          <div class="faq-item reveal">
+            <button class="faq-question">
+              How do I report a bug or suggest a feature?
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="faq-answer">
+              TaskSU is an open source project. You can open an issue or submit
+              a pull request on the GitHub repository. All feedback is welcome.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+      <div class="section-inner">
+        <div class="section-label reveal">Get started today</div>
+        <h2 class="section-title reveal">Ready to get<br />things done?</h2>
+        <p class="section-sub reveal">
+          Join TaskSU for free. No credit card. Just create an account and start
+          organizing your life.
+        </p>
+        <a href="login.html" class="btn-primary reveal">Create Free Account</a>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-top">
+        <div class="footer-brand">
+          <span class="footer-logo">TaskSU</span>
+          <p>
+            A no-nonsense task manager built for people who want to get things
+            done without the bloat. Free forever.
+          </p>
+          <div class="footer-social">
+            <a
+              href="https://github.com/SimeonATarr231/tasksu"
+              target="_blank"
+              aria-label="GitHub"
+            >
+              <i class="fa-brands fa-github"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li>
+              <a href="#why"
+                ><i class="fa-solid fa-chevron-right"></i> Why TaskSU</a
+              >
+            </li>
+            <li>
+              <a href="#features"
+                ><i class="fa-solid fa-chevron-right"></i> Features</a
+              >
+            </li>
+            <li>
+              <a href="#how"
+                ><i class="fa-solid fa-chevron-right"></i> How it works</a
+              >
+            </li>
+            <li>
+              <a href="#faq"><i class="fa-solid fa-chevron-right"></i> FAQ</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Account</h4>
+          <ul>
+            <li>
+              <a href="login.html"
+                ><i class="fa-solid fa-chevron-right"></i> Login</a
+              >
+            </li>
+            <li>
+              <a href="login.html"
+                ><i class="fa-solid fa-chevron-right"></i> Register</a
+              >
+            </li>
+            <li>
+              <a href="dashboard.html"
+                ><i class="fa-solid fa-chevron-right"></i> Dashboard</a
+              >
+            </li>
+            <li>
+              <a href="profile.html"
+                ><i class="fa-solid fa-chevron-right"></i> Profile</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Built with</h4>
+          <ul>
+            <li>
+              <a href="https://nodejs.org" target="_blank"
+                ><i class="fa-solid fa-chevron-right"></i> Node.js</a
+              >
+            </li>
+            <li>
+              <a href="https://expressjs.com" target="_blank"
+                ><i class="fa-solid fa-chevron-right"></i> Express</a
+              >
+            </li>
+            <li>
+              <a href="https://www.sqlite.org" target="_blank"
+                ><i class="fa-solid fa-chevron-right"></i> SQLite</a
+              >
+            </li>
+            <li>
+              <a href="https://railway.app" target="_blank"
+                ><i class="fa-solid fa-chevron-right"></i> Railway</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="footer-copy">
+          © 2026 TaskSU. Built by
+          <a href="https://github.com/SimeonATarr231" target="_blank"
+            >Simeon A. Tarr</a
+          >
+          — Liberia 🇱🇷
+        </p>
+        <span class="footer-tech">Node.js + Express + SQLite + Vanilla JS</span>
+      </div>
+    </footer>
+
+    <script>
+      // THEME SYSTEM
+      const applyTheme = (theme) => {
+        if (theme === "system") {
+          const prefersDark = window.matchMedia(
+            "(prefers-color-scheme: dark)",
+          ).matches;
+          document.documentElement.setAttribute(
+            "data-theme",
+            prefersDark ? "dark" : "light",
+          );
+        } else {
+          document.documentElement.setAttribute("data-theme", theme);
+        }
+      };
+
+      const initTheme = () => {
+        const saved = localStorage.getItem("taskfree-theme") || "dark";
+        applyTheme(saved);
+        document
+          .querySelectorAll(".theme-opt, .mobile-theme button")
+          .forEach((btn) => {
+            btn.classList.toggle("active", btn.dataset.theme === saved);
+          });
+      };
+
+      document
+        .querySelectorAll(".theme-opt, .mobile-theme button")
+        .forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const theme = btn.dataset.theme;
+            localStorage.setItem("taskfree-theme", theme);
+            applyTheme(theme);
+            document
+              .querySelectorAll(".theme-opt, .mobile-theme button")
+              .forEach((b) => {
+                b.classList.toggle("active", b.dataset.theme === theme);
+              });
+          });
+        });
+
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .addEventListener("change", () => {
+          if (localStorage.getItem("taskfree-theme") === "system")
+            applyTheme("system");
+        });
+
+      initTheme();
+
+      // HAMBURGER MENU
+      const hamburger = document.getElementById("hamburger");
+      const mobileMenu = document.getElementById("mobile-menu");
+
+      hamburger.addEventListener("click", () => {
+        hamburger.classList.toggle("open");
+        mobileMenu.classList.toggle("open");
+        document.body.style.overflow = mobileMenu.classList.contains("open")
+          ? "hidden"
+          : "";
+      });
+
+      // Close mobile menu when a link is clicked
+      document
+        .querySelectorAll(".mobile-nav-link, .mobile-cta")
+        .forEach((link) => {
+          link.addEventListener("click", () => {
+            hamburger.classList.remove("open");
+            mobileMenu.classList.remove("open");
+            document.body.style.overflow = "";
+          });
+        });
+
+      // FAQ ACCORDION
+      document.querySelectorAll(".faq-question").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const answer = btn.nextElementSibling;
+          const isOpen = answer.classList.contains("open");
+
+          document
+            .querySelectorAll(".faq-answer")
+            .forEach((a) => a.classList.remove("open"));
+          document
+            .querySelectorAll(".faq-question")
+            .forEach((b) => b.classList.remove("open"));
+
+          if (!isOpen) {
+            answer.classList.add("open");
+            btn.classList.add("open");
+          }
+        });
+      });
+
+      // SCROLL REVEAL ANIMATION
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1 },
+      );
+
+      document.querySelectorAll(".reveal").forEach((el) => {
+        revealObserver.observe(el);
+      });
+    </script>
+  </body>
 </html>
