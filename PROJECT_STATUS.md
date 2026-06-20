@@ -1,12 +1,15 @@
 # TaskSU — Project Status
 
 ## Live URL
+
 https://tasksy-production.up.railway.app
 
 ## GitHub Repo
+
 https://github.com/SimeonATarr231/tasksu
 
 ## Tech Stack
+
 - Frontend: HTML, CSS, Vanilla JavaScript
 - Backend: Node.js + Express
 - Database: SQLite (better-sqlite3)
@@ -16,12 +19,14 @@ https://github.com/SimeonATarr231/tasksu
 - Fonts: Space Mono + Syne (Google Fonts)
 
 ## Pages
-- /                → landing.html (home/marketing page)
-- /login.html      → login and register
-- /dashboard.html  → main task manager
-- /profile.html    → user profile settings
+
+- / → landing.html (home/marketing page)
+- /login.html → login and register
+- /dashboard.html → main task manager
+- /profile.html → user profile settings
 
 ## Completed Features
+
 - Landing page with animated hamburger, theme toggle, FAQ accordion, scroll reveal
 - About section
 - User registration and login
@@ -41,14 +46,17 @@ https://github.com/SimeonATarr231/tasksu
 - Deployed live on Railway
 
 ## Next Features to Build
+
 - Rename dashboard labels: To-do, Pending, Completed
 - Testimonials section on landing page (after collecting feedback)
 - Email verification (future)
 - Forgot/reset password (future)
 
 ## Environment Variables Required
+
 - PORT
 - SESSION_SECRET
 
 ## Known Issues
+
 - None currently
