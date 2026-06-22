@@ -882,6 +882,49 @@
             border-color: var(--accent);
             color: var(--accent);
         }
+
+        /* Category Counts */
+        .cat-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--border);
+            color: var(--muted);
+            font-size: 0.6rem;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            padding: 0 3px;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+
+        /* Marl All Btn */
+        .mark-all-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.45rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mark-all-btn:hover {
+            border-color: #00cc66;
+            color: #00cc66;
+        }
+
+        .mark-all-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -960,7 +1003,6 @@
                     <option value="other">Other</option>
                 </select>
             </div>
-            <button class="add-btn" id="add-task-btn">Add Task</button>
             <div id="task-error"></div>
         </div>
 
@@ -982,12 +1024,18 @@
         </div>
 
         <div class="filters" style="margin-top:0.5rem;">
-            <button class="filter-btn" data-filter="cat-work">Work</button>
-            <button class="filter-btn" data-filter="cat-study">Study</button>
-            <button class="filter-btn" data-filter="cat-personal">Personal</button>
-            <button class="filter-btn" data-filter="cat-health">Health</button>
-            <button class="filter-btn" data-filter="cat-finance">Finance</button>
-            <button class="filter-btn" data-filter="cat-other">Other</button>
+            <button class="filter-btn" data-filter="cat-work">Work <span class="cat-count" id="count-work"></span></button>
+            <button class="filter-btn" data-filter="cat-study">Study <span class="cat-count" id="count-study"></span></button>
+            <button class="filter-btn" data-filter="cat-personal">Personal <span class="cat-count" id="count-personal"></span></button>
+            <button class="filter-btn" data-filter="cat-health">Health <span class="cat-count" id="count-health"></span></button>
+            <button class="filter-btn" data-filter="cat-finance">Finance <span class="cat-count" id="count-finance"></span></button>
+            <button class="filter-btn" data-filter="cat-other">Other <span class="cat-count" id="count-other"></span></button>
+        </div>
+
+        <div style="margin-bottom:1.5rem;margin-top:1rem;">
+            <button class="mark-all-btn" id="mark-all-btn">
+                <i class="fa-solid fa-check-double"></i> Mark All Complete
+            </button>
         </div>
 
         <!-- TASK LIST -->

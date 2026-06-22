@@ -96,14 +96,40 @@ const updateStats = () => {
   document.getElementById("stat-done").textContent = done;
   document.getElementById("stat-overdue").textContent = overdue;
 
-  // Update overdue badge on filter button
-    const badge = document.getElementById('overdue-badge');
-    if (overdue > 0) {
-        badge.textContent = overdue;
-        badge.style.display = 'inline-flex';
-    } else {
-        badge.style.display = 'none';
+  // Update overdue badge
+  const badge = document.getElementById("overdue-badge");
+  if (overdue > 0) {
+    badge.textContent = overdue;
+    badge.style.display = "inline-flex";
+  } else {
+    badge.style.display = "none";
+  }
+
+  // Update category counts
+  const categories = [
+    "work",
+    "study",
+    "personal",
+    "health",
+    "finance",
+    "other",
+  ];
+  categories.forEach((cat) => {
+    const count = allTasks.filter((t) => t.category === cat).length;
+    const el = document.getElementById(`count-${cat}`);
+    if (el) {
+      el.textContent = count > 0 ? count : "";
+      el.style.display = count > 0 ? "inline-flex" : "none";
     }
+  });
+
+  // Update mark all button
+  const markAllBtn = document.getElementById("mark-all-btn");
+  if (markAllBtn) {
+    const allDone =
+      allTasks.length > 0 && allTasks.every((t) => t.completed === 1);
+    markAllBtn.disabled = allDone || allTasks.length === 0;
+  }
 };
 
 /* RENDER TASK */
@@ -131,9 +157,9 @@ const renderTasks = () => {
     filtered = allTasks.filter(
       (t) => t.completed === 0 && t.due_date && t.due_date < today,
     );
-  } else if (currentFilter.startsWith('cat-')) {
-    const cat = currentFilter.replace('cat-', '');
-    filter = filtered.filter(t => t.category === cat);
+  } else if (currentFilter.startsWith("cat-")) {
+    const cat = currentFilter.replace("cat-", "");
+    filter = filtered.filter((t) => t.category === cat);
   }
 
   // Empty state
@@ -168,12 +194,16 @@ const renderTasks = () => {
             }
               <div class="task-meta">
                   <span class="priority-tag ${task.priority}">${task.priority}</span>
-                  ${task.category ? `<span class="category-tag ${task.category}">${task.category}</span>` : ''}
+                  ${task.category ? `<span class="category-tag ${task.category}">${task.category}</span>` : ""}
                   <span class="task-date">${formatDate(task.created_at)}</span>
-                  ${task.due_date ? (() => {
-                      const due = formatDueDate(task.due_date);
-                      return `<span class="due-date-display ${due.class}">${due.text}</span>`;
-                  })() : ''}
+                  ${
+                    task.due_date
+                      ? (() => {
+                          const due = formatDueDate(task.due_date);
+                          return `<span class="due-date-display ${due.class}">${due.text}</span>`;
+                        })()
+                      : ""
+                  }
               </div>
           </div>
 
@@ -218,7 +248,13 @@ document.getElementById("add-task-btn").addEventListener("click", async () => {
     const response = await fetch("/api/tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description, priority, due_date, category }),
+      body: JSON.stringify({
+        title,
+        description,
+        priority,
+        due_date,
+        category,
+      }),
     });
 
     const data = await response.json();
@@ -306,21 +342,21 @@ const editTask = (taskId) => {
 
       <div class="edit-row">
           <select class="edit-priority">
-              <option value="low" ${task.priority === 'low' ? 'selected' : ''}>Low</option>
-              <option value="medium" ${task.priority === 'medium' ? 'selected' : ''}>Medium</option>
-              <option value="high" ${task.priority === 'high' ? 'selected' : ''}>High</option>
+              <option value="low" ${task.priority === "low" ? "selected" : ""}>Low</option>
+              <option value="medium" ${task.priority === "medium" ? "selected" : ""}>Medium</option>
+              <option value="high" ${task.priority === "high" ? "selected" : ""}>High</option>
           </select>
           <select class="edit-category">
-              <option value="" ${!task.category ? 'selected' : ''}>No Category</option>
-              <option value="work" ${task.category === 'work' ? 'selected' : ''}>Work</option>
-              <option value="study" ${task.category === 'study' ? 'selected' : ''}>Study</option>
-              <option value="personal" ${task.category === 'personal' ? 'selected' : ''}>Personal</option>
-              <option value="health" ${task.category === 'health' ? 'selected' : ''}>Health</option>
-              <option value="finance" ${task.category === 'finance' ? 'selected' : ''}>Finance</option>
-              <option value="other" ${task.category === 'other' ? 'selected' : ''}>Other</option>
+              <option value="" ${!task.category ? "selected" : ""}>No Category</option>
+              <option value="work" ${task.category === "work" ? "selected" : ""}>Work</option>
+              <option value="study" ${task.category === "study" ? "selected" : ""}>Study</option>
+              <option value="personal" ${task.category === "personal" ? "selected" : ""}>Personal</option>
+              <option value="health" ${task.category === "health" ? "selected" : ""}>Health</option>
+              <option value="finance" ${task.category === "finance" ? "selected" : ""}>Finance</option>
+              <option value="other" ${task.category === "other" ? "selected" : ""}>Other</option>
           </select>
           <input type="date" class="edit-due-date"
-                value="${task.due_date || ''}">
+                value="${task.due_date || ""}">
       </div>
     </div>
 
@@ -342,7 +378,7 @@ const saveTask = async (taskId) => {
   const description = taskItem.querySelector(".edit-description").value.trim();
   const priority = taskItem.querySelector(".edit-priority").value;
   const due_date = taskItem.querySelector(".edit-due-date").value || null;
-  const category = taskItem.querySelector('.edit-category').value || null;
+  const category = taskItem.querySelector(".edit-category").value || null;
 
   if (!title) {
     taskItem.querySelector(".edit-title").style.borderColor = "var(--accent)";
@@ -354,7 +390,13 @@ const saveTask = async (taskId) => {
     const response = await fetch(`/api/tasks/${taskId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description, priority, due_date, category }),
+      body: JSON.stringify({
+        title,
+        description,
+        priority,
+        due_date,
+        category,
+      }),
     });
 
     const data = await response.json();
@@ -374,6 +416,41 @@ const saveTask = async (taskId) => {
 document.getElementById("task-search").addEventListener("input", (e) => {
   searchQuery = e.target.value.trim();
   renderTasks();
+});
+
+/* MARK ALL COMPLETE */
+document.getElementById("mark-all-btn").addEventListener("click", async () => {
+  const btn = document.getElementById("mark-all-btn");
+  const incompleteTasks = allTasks.filter((t) => t.completed === 0);
+
+  if (incompleteTasks.length === 0) return;
+
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Marking...';
+
+  try {
+    // Send all requests in parallel
+    await Promise.all(
+      incompleteTasks.map((task) =>
+        fetch(`/api/tasks/${task.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ completed: true }),
+        }),
+      ),
+    );
+
+    // Update local array
+    allTasks = allTasks.map((t) => ({ ...t, completed: 1 }));
+    renderTasks();
+    updateStats();
+  } catch (error) {
+    console.error("Mark all error:", error);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML =
+      '<i class="fa-solid fa-check-double"></i> Mark All Complete';
+  }
 });
 
 /* FILTERS */
@@ -440,6 +517,25 @@ const formatDueDate = (dueDateStr) => {
   if (diffDays === 1) return { text: `Due tomorrow · ${formatted}`, class: "" };
   return { text: `Due ${formatted}`, class: "" };
 };
+
+/* KEYBOARD SHORTCUT */
+document.addEventListener("keydown", (e) => {
+  // Press N to focus the new task input
+  // Only if not already typing in an input or textarea
+  if (
+    e.key === "n" &&
+    document.activeElement.tagName !== "INPUT" &&
+    document.activeElement.tagName !== "TEXTAREA" &&
+    document.activeElement.tagName !== "SELECT"
+  ) {
+    e.preventDefault();
+    const titleInput = document.getElementById("task-title");
+    if (titleInput) {
+      titleInput.focus();
+      titleInput.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }
+});
 
 /* INITIALIZATION */
 showDate();
