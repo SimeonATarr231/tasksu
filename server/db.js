@@ -43,6 +43,25 @@ const initDb = () => {
     // Clumn already exist - safe to ignore
   }
 
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS tokens (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id    INTEGER NOT NULL,
+      token      TEXT    NOT NULL,
+      type       TEXT    NOT NULL,
+      expires_at INTEGER NOT NULL,
+      created_at TEXT    DEFAULT (datetime('now')),
+      FOREIGN KEY (user_id) REFERENCES users(id)
+    )
+  `);
+
+  // Add verified column to existing users if it doesn't exist
+  try {
+    db.exec(`ALTER TABLE users ADD COLUMN verified INTEGER DEFAULT 0`);
+  } catch (e) {
+    // Column already exists — safe to ignore
+  }
+
   console.log("Database initialized successfully");
 };
 

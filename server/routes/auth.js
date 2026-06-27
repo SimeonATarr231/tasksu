@@ -50,6 +50,24 @@ router.post("/register", async (req, res) => {
     req.session.userId = result.lastInsertRowid;
     req.session.username = username;
 
+    // Send verification email
+    try {
+      const verifyToken = crypto.randomBytes(32).toString("hex");
+      const expiresAt = Date.now() + 1000 * 60 * 60 * 24; // 24 hours
+
+      db.prepare(
+        `
+    INSERT INTO tokens (user_id, token, type, expires_at)
+    VALUES (?, ?, 'verification', ?)
+  `,
+      ).run(result.lastInsertRowid, verifyToken, expiresAt);
+
+      await sendVerificationEmail(email, verifyToken);
+    } catch (emailErr) {
+      console.error("Verification email failed:", emailErr);
+      // Don't block registration if email fails
+    }
+
     res.status(201).json({
       message: "Account created successfully",
       user: { id: result.lastInsertRowid, username },
@@ -78,6 +96,15 @@ router.post("/login", async (req, res) => {
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
       return res.status(401).json({ error: "Invalid email or password" });
+    }
+
+    if (!user.verified) {
+      return res
+        .status(403)
+        .json({
+          error:
+            "Please verify your email before logging in. Check your inbox for the verification link.",
+        });
     }
 
     req.session.userId = user.id;

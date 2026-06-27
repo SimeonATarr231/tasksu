@@ -8,7 +8,7 @@ const client = new BrevoClient({
 async function sendVerificationEmail(toEmail, token) {
   const verifyUrl = `${process.env.BASE_URL}/api/auth/verify-email?token=${token}`;
 
-  await client.smtp.sendTransacEmail({
+  await client.transactionalEmails.sendTransacEmail({
     to: [{ email: toEmail }],
     sender: { name: "TaskSU", email: process.env.FROM_EMAIL },
     subject: "Verify your TaskSU account",
@@ -32,7 +32,7 @@ async function sendVerificationEmail(toEmail, token) {
 async function sendPasswordResetEmail(toEmail, token) {
   const resetUrl = `${process.env.BASE_URL}/reset-password.html?token=${token}`;
 
-  await client.smtp.sendTransacEmail({
+  await client.transactionalEmails.sendTransacEmail({
     to: [{ email: toEmail }],
     sender: { name: "TaskSU", email: process.env.FROM_EMAIL },
     subject: "Reset your TaskSU password",
