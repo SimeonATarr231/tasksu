@@ -47,9 +47,6 @@ router.post("/register", async (req, res) => {
       )
       .run(username, email, hashedPassword);
 
-    req.session.userId = result.lastInsertRowid;
-    req.session.username = username;
-
     // Send verification email
     try {
       const verifyToken = crypto.randomBytes(32).toString("hex");
@@ -69,8 +66,10 @@ router.post("/register", async (req, res) => {
     }
 
     res.status(201).json({
-      message: "Account created successfully",
+      message:
+        "Account created successfully. Please check your email to verify your account.",
       user: { id: result.lastInsertRowid, username },
+      requiresVerification: true,
     });
   } catch (error) {
     console.error("Register error:", error);
@@ -99,12 +98,10 @@ router.post("/login", async (req, res) => {
     }
 
     if (!user.verified) {
-      return res
-        .status(403)
-        .json({
-          error:
-            "Please verify your email before logging in. Check your inbox for the verification link.",
-        });
+      return res.status(403).json({
+        error:
+          "Please verify your email before logging in. Check your inbox for the verification link.",
+      });
     }
 
     req.session.userId = user.id;
