@@ -39,7 +39,7 @@ const checkAuth = async () => {
     const data = await response.json();
 
     if (!data.loggedIn) {
-      window.location.href = "/index.html";
+      window.location.href = "/login.html";
       return;
     }
 
@@ -47,7 +47,7 @@ const checkAuth = async () => {
       data.user.username;
     loadTasks();
   } catch (error) {
-    window.location.href = "/index.html";
+    window.location.href = "/login.html";
   }
 };
 
@@ -469,7 +469,7 @@ document.querySelectorAll(".filter-btn").forEach((btn) => {
 document.getElementById("logout-btn").addEventListener("click", async () => {
   try {
     await fetch("/api/auth/logout", { method: "POST" });
-    window.location.href = "/index.html";
+    window.location.href = "/login.html";
   } catch (error) {
     console.error("Logout error:", error);
   }
