@@ -198,7 +198,7 @@ router.post("/reset-password", async (req, res) => {
 
     if (!record)
       return res.status(400).json({ error: "Invalid or expired reset link" });
-    if (Date.now() > record.expires_at) {
+    if (Date.now() > Number(record.expires_at)) {
       db.prepare("DELETE FROM tokens WHERE id = ?").run(record.id);
       return res.status(400).json({ error: "Reset link has expired" });
     }
@@ -233,7 +233,7 @@ router.get("/verify-email", (req, res) => {
 
     if (!record)
       return res.status(400).send("Invalid or expired verification link");
-    if (Date.now() > record.expires_at) {
+    if (Date.now() > Number(record.expires_at)) {
       db.prepare("DELETE FROM tokens WHERE id = ?").run(record.id);
       return res.status(400).send("Verification link has expired");
     }

@@ -1,8 +1,8 @@
 // server/email.js
-const { BrevoClient } = require("@getbrevo/brevo");
+const { BrevoClient } = require('@getbrevo/brevo');
 
 const client = new BrevoClient({
-  apiKey: process.env.BREVO_API_KEY,
+  apiKey: process.env.BREVO_API_KEY
 });
 
 async function sendVerificationEmail(toEmail, token) {
@@ -10,22 +10,34 @@ async function sendVerificationEmail(toEmail, token) {
 
   await client.transactionalEmails.sendTransacEmail({
     to: [{ email: toEmail }],
-    sender: { name: "TaskSU", email: process.env.FROM_EMAIL },
-    subject: "Verify your TaskSU account",
+    sender: { name: 'TasksU', email: process.env.FROM_EMAIL },
+    subject: 'Confirm your TasksU account',
     htmlContent: `
-      <div style="font-family: monospace; background: #0a0a0a; color: #f5f0e8; padding: 40px; border-radius: 8px;">
-        <h2 style="color: #ff4d00;">Verify your email</h2>
-        <p>Thanks for signing up for TaskSU. Click the button below to verify your email address.</p>
+      <div style="font-family: 'Courier New', monospace; background-color: #0a0a0a; padding: 48px 40px; max-width: 520px; margin: 0 auto;">
+        <p style="font-size: 22px; font-weight: 800; color: #ff4d00; margin: 0 0 32px 0; letter-spacing: -0.5px;">TasksU</p>
+
+        <h1 style="font-size: 20px; font-weight: 700; color: #f5f0e8; margin: 0 0 12px 0;">Confirm your email address</h1>
+        <p style="font-size: 14px; color: #999; line-height: 1.7; margin: 0 0 32px 0;">
+          You signed up for TasksU. Click the button below to confirm your email address and activate your account.
+          This link expires in <strong style="color: #f5f0e8;">24 hours</strong>.
+        </p>
+
         <a href="${verifyUrl}"
-           style="display: inline-block; background: #ff4d00; color: #fff;
-                  padding: 12px 24px; border-radius: 4px; text-decoration: none;
-                  font-weight: bold; margin: 20px 0;">
-          Verify Email
+           style="display: inline-block; background-color: #ff4d00; color: #ffffff;
+                  padding: 13px 28px; text-decoration: none;
+                  font-size: 14px; font-weight: 700; letter-spacing: 0.03em;
+                  border-radius: 0;">
+          Verify Email Address
         </a>
-        <p style="color: #666; font-size: 12px;">This link expires in 24 hours.<br>
-        If you didn't create an account, ignore this email.</p>
+
+        <hr style="border: none; border-top: 1px solid #1a1a1a; margin: 40px 0;" />
+
+        <p style="font-size: 12px; color: #444; line-height: 1.6; margin: 0;">
+          If you didn't create a TasksU account, you can safely ignore this email.<br>
+          This link will expire after 24 hours and cannot be reused.
+        </p>
       </div>
-    `,
+    `
   });
 }
 
@@ -34,22 +46,35 @@ async function sendPasswordResetEmail(toEmail, token) {
 
   await client.transactionalEmails.sendTransacEmail({
     to: [{ email: toEmail }],
-    sender: { name: "TaskSU", email: process.env.FROM_EMAIL },
-    subject: "Reset your TaskSU password",
+    sender: { name: 'TasksU', email: process.env.FROM_EMAIL },
+    subject: 'Reset your TasksU password',
     htmlContent: `
-      <div style="font-family: monospace; background: #0a0a0a; color: #f5f0e8; padding: 40px; border-radius: 8px;">
-        <h2 style="color: #ff4d00;">Reset your password</h2>
-        <p>We received a request to reset your TaskSU password. Click below to choose a new one.</p>
+      <div style="font-family: 'Courier New', monospace; background-color: #0a0a0a; padding: 48px 40px; max-width: 520px; margin: 0 auto;">
+        <p style="font-size: 22px; font-weight: 800; color: #ff4d00; margin: 0 0 32px 0; letter-spacing: -0.5px;">TasksU</p>
+
+        <h1 style="font-size: 20px; font-weight: 700; color: #f5f0e8; margin: 0 0 12px 0;">Reset your password</h1>
+        <p style="font-size: 14px; color: #999; line-height: 1.7; margin: 0 0 32px 0;">
+          We received a request to reset the password for your TasksU account.
+          Click the button below to choose a new password.
+          This link expires in <strong style="color: #f5f0e8;">1 hour</strong>.
+        </p>
+
         <a href="${resetUrl}"
-           style="display: inline-block; background: #ff4d00; color: #fff;
-                  padding: 12px 24px; border-radius: 4px; text-decoration: none;
-                  font-weight: bold; margin: 20px 0;">
+           style="display: inline-block; background-color: #ff4d00; color: #ffffff;
+                  padding: 13px 28px; text-decoration: none;
+                  font-size: 14px; font-weight: 700; letter-spacing: 0.03em;
+                  border-radius: 0;">
           Reset Password
         </a>
-        <p style="color: #666; font-size: 12px;">This link expires in 1 hour.<br>
-        If you didn't request this, ignore this email — your password won't change.</p>
+
+        <hr style="border: none; border-top: 1px solid #1a1a1a; margin: 40px 0;" />
+
+        <p style="font-size: 12px; color: #444; line-height: 1.6; margin: 0;">
+          If you didn't request a password reset, ignore this email — your password will not change.<br>
+          This link will expire after 1 hour and cannot be reused.
+        </p>
       </div>
-    `,
+    `
   });
 }
 
