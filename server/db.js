@@ -30,6 +30,20 @@ const initDb = () => {
     )
   `);
 
+  // Subtasks table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS subtasks (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        task_id     INTEGER NOT NULL,
+        user_id     INTEGER NOT NULL,
+        title       TEXT    NOT NULL,
+        completed   INTEGER DEFAULT 0,
+        created_at  TEXT    DEFAULT (datetime('now')),
+        FOREIGN KEY (task_id) REFERENCES tasks(id),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    )
+  `);
+
   // Add due_date column to existing tasks if it doesn't exist
   try {
     db.exec(`ALTER TABLE tasks ADD COLUMN due_date TEXT`);
