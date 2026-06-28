@@ -288,4 +288,27 @@ router.post("/resend-verification", async (req, res) => {
   }
 });
 
+/* Validate Reset Token */
+router.get('/validate-reset-token', (req, res) => {
+  const { token } = req.query;
+  if (!token) return res.json({ valid: false });
+
+  try {
+    const record = db.prepare(`
+      SELECT * FROM tokens WHERE token = ? AND type = 'reset'
+    `).get(token);
+
+    if (!record) return res.json({ valid: false });
+    if (Date.now() > Number(record.expires_at)) {
+      db.prepare('DELETE FROM tokens WHERE id = ?').run(record.id);
+      return res.json({ valid: false });
+    }
+
+    res.json({ valid: true });
+  } catch (error) {
+    console.error('Validate reset token error:', error);
+    res.json({ valid: false });
+  }
+});
+
 module.exports = router;
