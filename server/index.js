@@ -40,6 +40,9 @@ app.use("/api/tasks", taskRoutes);
 const userRoutes = require("./routes/user");
 app.use("/api/user", userRoutes);
 
+const subtaskRoutes = require('./routes/subtasks');
+app.use('/api/subtasks', subtaskRoutes);
+
 app.get("/api/health", (req, res) => {
   res.json({ status: "TasksU server is running" });
 });
